@@ -1,5 +1,5 @@
 ---
-title: javascript实现Ajax
+title: JavaScript实现Ajax
 date: 2016-03-15 20:44:28
 tags:
 ---
