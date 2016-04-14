@@ -1,7 +1,8 @@
 ---
 title: 前端面试复习-1-浏览器和计算机网络等
 date: 2016-03-25 21:11:44
-tags:
+categories: 前端面试复习
+tags: interview
 ---
 
 ## 前言

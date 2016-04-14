@@ -1,7 +1,10 @@
 ---
 title: JavaScript实现Ajax
 date: 2016-03-15 20:44:28
+categories: JavaScript
 tags:
+- JavaScript
+- ajax
 ---
 
 ## 前言
@@ -122,7 +125,7 @@ function ajax(url, options) {
 
 // 使用示例：
 ajax(
-    'someURL', 
+    'someURL',
     {
         type: 'POST',
         data: {

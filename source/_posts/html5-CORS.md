@@ -1,7 +1,10 @@
 ---
 title: 谈谈CORS跨域
 date: 2016-03-22 14:04:14
+categories: HTML&CSS
 tags:
+- CORS
+- XMLHttpRequest
 ---
 
 ## 前言
@@ -24,7 +27,7 @@ CORS全称是Cross-Origin Resource Sharing(跨域资源共享)，是W3C提出的
 因为CORS是属于XMLHttpRequest2的一部分，所以主要要做的就是区分出IE8/9和不支持XMLHttpRequest2的浏览器。
 
 {% code lang:javascript %}
-function createCORSRequest(method, url) { 
+function createCORSRequest(method, url) {
     var xhr = new XMLHttpRequest();    
     if ('withCredentials' in xhr) {    
         // 支持CORS    
@@ -40,7 +43,7 @@ function createCORSRequest(method, url) {
     }    
     return xhr;    
 }    
-     
+
 var xhr = createCORSRequest('GET', url);
 if (!xhr) {    
     throw new Error('CORS not supported');

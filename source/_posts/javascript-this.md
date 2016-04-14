@@ -1,7 +1,10 @@
 ---
 title: 谈谈JavaScript中的this
 date: 2016-03-16 18:25:42
+categories: JavaScript
 tags:
+- JavaScript
+- this
 ---
 
 ## 何为this
@@ -61,7 +64,7 @@ var obj = {
         console.log(this.name);
     }
 }
-var show = obj.show; 
+var show = obj.show;
 show();// lala
 {% endcode %}
 

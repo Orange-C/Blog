@@ -1,7 +1,10 @@
 ---
 title: 谈谈JavaScript的作用域链
 date: 2016-03-21 19:59:14
+categories: JavaScript
 tags:
+- JavaScript
+- scope
 ---
 
 ## 前言

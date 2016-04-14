@@ -1,7 +1,8 @@
 ---
 title: 前端面试复习-2-HTML&CSS
 date: 2016-03-27 13:34:07
-tags:
+categories: 前端面试复习
+tags: interview
 ---
 
 ## HTML(5)

@@ -1,6 +1,7 @@
 ---
 title: Hello World
 date: 2016-03-14 21:07:31
+categories: 随笔
 tags: 
 ---
 
