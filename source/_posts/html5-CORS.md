@@ -1,7 +1,7 @@
 ---
 title: 谈谈CORS跨域
 date: 2016-03-22 14:04:14
-categories: HTML&CSS
+categories: HTML
 tags:
 - CORS
 - XMLHttpRequest
