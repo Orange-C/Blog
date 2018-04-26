@@ -3,13 +3,13 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Oraaange's Blog | why so serious?
+title: Oraaange's Blog
 subtitle:
-description: 且歌且笑
+description: The End is always near
 author: Oraaange
-language: zh-Hans
+language: zh-CN
 timezone:
-avatar: /images/avatar.jpg
+avatar: /images/avatar.jpeg
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -29,7 +29,7 @@ i18n_dir: :lang
 skip_render:
 
 # Writing
-new_post_name: :title.md # File name of new posts
+new_post_name: :year:month:day:title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
 external_link: true # Open external links in new tab
@@ -43,7 +43,16 @@ highlight:
   line_number: true
   auto_detect: false
   tab_replace:
-
+  
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 5
+  order_by: -date
+  
 # Category & Tag
 default_category: uncategorized
 category_map:
@@ -66,17 +75,9 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: next
 
-duoshuo_shortname: oraaange
-
-# feed
-feed:
-  type: atom
-  path: atom.xml
-  limit: 20
-
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:Orange-C/Blog.git
+  repo: git@github.com:Orange-C/blog.git
   branch: gh-pages

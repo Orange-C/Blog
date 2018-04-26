@@ -1,7 +1,7 @@
 ---
 title: 前端面试复习-1-浏览器和计算机网络等
 date: 2016-03-25 21:11:44
-categories: 前端面试复习
+categories: interview
 tags: interview
 ---
 
@@ -114,7 +114,11 @@ TIPS：
 
 ### XSS原理
 
+XSS，跨站脚本攻击。在页面中插入恶意脚本，在用户浏览时触发。
+
 ### XSS防范
+
+XSS攻击方法多样，很难彻底防范，最方便的就是检测用户输入。
 
 ### CSRF原理
 

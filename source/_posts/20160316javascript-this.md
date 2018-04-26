@@ -19,7 +19,7 @@ tags:
 
 <!-- More -->
 
-{% code lang:javascript %}
+```js
 var name = 'lala';
 var obj = {
     name: 'hehe',
@@ -29,11 +29,11 @@ var obj = {
 }
 
 obj.show(); // hehe
-{% endcode %}
+```
 
 换个更清晰的写法，我们把声明和调用放在两个对象里面
 
-{% code lang:javascript %}
+```js
 var obj = {
     name: 'hehe',
     show: function(){
@@ -47,7 +47,7 @@ var t_obj = {
 }
 
 t_obj.show(); // lala
-{% endcode %}
+```
 
 可以看到show虽然是在obj中声明的，但是通过t_obj调用了这个方法，所以此时this指向t_obj。
 
@@ -56,7 +56,7 @@ t_obj.show(); // lala
 
 我们将上面的代码改一下，将obj.show赋值给全局变量show再调用他，此时this绑定到全局对象
 
-{% code lang:javascript %}
+```js
 var name = 'lala';
 var obj = {
     name: 'hehe',
@@ -66,13 +66,13 @@ var obj = {
 }
 var show = obj.show;
 show();// lala
-{% endcode %}
+```
 
 ### 在函数内部的函数调用
 
-在函数内部调用一个函数，比如在一个对象的方法里面调用一个函数时，this会指向全局对象（讲道理应该指向对象）。这是JavaScript设计比较坑的一个地方，平时经常使用命名一个新变量that替代this。
+在函数内部调用一个函数，比如在一个对象的方法里面调用一个函数时，this会指向全局对象（讲道理的话应该指向对象）。这是JavaScript设计比较坑的一个地方，平时经常使用命名一个新变量ctx（context，即上下文环境）替代this。
 
-{% code lang:javascript %}
+```js
 var name = 'lala';
 var obj = {
     name: 'hehe',
@@ -85,43 +85,43 @@ var obj = {
     }
 }
 obj.show(); // lala
-{% endcode %}
+```
 
 修正版：
 
-{% code lang:javascript %}
+```js
 var name = 'lala';
 var obj = {
     name: 'hehe',
     show: function(){
-        var that = this;
+        var ctx = this;
         var test = function(){
-            console.log(that.name);
+            console.log(ctx.name);
         }
 
         test();
     }
 }
 obj.show(); // hehe
-{% endcode %}
+```
 
 ### 作为构造函数调用
 
 我们常使用new 构造函数名()来创建一个对象，此时函数中的this指向新创建的对象。如果不使用new，则和普通函数一样绑定到全局对象
 
-{% code lang:javascript %}
+```js
 function Foo(){
     console.log(this);
 }
 var test = new Foo();// test
 Foo();// window
-{% endcode %}
+```
 
 ### 在`setTimeout`、`setInterval`和匿名函数中
 
 在`setTimeout`,`setInterval`和匿名函数执行时的对象为全局对象，所以this也指向全局对象。
 
-{% code lang:javascript %}
+```js
 var name = 'lala';
 var obj = {
     name: 'hehe',
@@ -132,17 +132,17 @@ var obj = {
     }
 }
 obj.show(); // lala
-{% endcode %}
+```
 
 ### 函数调用`call`和`apply`方法时
 
-两者的本质的就是改变函数当前的上下文环境即this，两者的区别是`call`接受一个个参数，而`apply`接受一个参数数组。
+两者的本质的就是改变函数当前的上下文环境即this，两者的区别是`call`接受一个个参数，而`apply`接受一个参数数组。这两种方法会调用函数。
 
 PS：使用`call`和`apply`函数的时候要注意，如果传递的 this 值不是一个对象，JavaScript 将会尝试使用内部`ToObject`操作将其转换为对象。因此，如果传递的值是一个原始值比如 7 或 'foo' ，那么就会使用相关构造函数将它转换为对象，所以原始值 7 通过`new Number(7)`被转换为对象，而字符串'foo'使用`new String('foo')`转化为对象
 
 ### 函数调用`bind`方法时
 
-函数调用bind方法时会创建一个有相同函数体和作用于的函数，但是新函数的this**永久**指向bind的第一个参数，即使作为对象方法调用。
+函数调用bind方法时会创建一个有相同函数体和作用域的函数，新函数的this指向bind的第一个参数。该方法不会调用函数，而是返回新函数。
 
 ## 参考
 

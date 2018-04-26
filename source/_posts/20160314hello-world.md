@@ -7,11 +7,11 @@ tags:
 
 ## 博客上线
 
-{% code lang:javascript %}
+```js
 console.log('hello world'); //Hi
-{% endcode %}
+```
 
-用[Hexo](https://hexo.io/)+gihub搭建了这个博客，主题采用的是[NexT](http://theme-next.iissnan.com/)。暂时不会变动博客了，静下心好好学基础
+用[Hexo](https://hexo.io/)+github page搭建了这个博客，主题采用的是[NexT](http://theme-next.iissnan.com/)。暂时不会变动博客了，静下心好好学基础
 
 <!-- More -->
 

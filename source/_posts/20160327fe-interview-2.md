@@ -1,7 +1,7 @@
 ---
 title: 前端面试复习-2-HTML&CSS
 date: 2016-03-27 13:34:07
-categories: 前端面试复习
+categories: interview
 tags: interview
 ---
 
@@ -22,12 +22,12 @@ tags: interview
 ### HTML5离线存储技术
 
 在用户离线时，可以正常访问站点，联网时可以更新缓存。使用方法就是在html标签中加上manifest属性,如下
-{% code lang:html %}
+```html
 <!DOCTYPE HTML>
 <html manifest="cache.manifest">
 ...
 </html>
-{% endcode %}
+```
 cache.manifest文件格式如下
 ```
 CACHE MANIFEST
@@ -112,8 +112,24 @@ NodeList对象是基于DOM结构的动态查询，是双向绑定的。
 ### 如何优化DOM操作的性能
 
 * 避免反复使用DOM查询操作，把结果用变量缓存
-* 避免大量使用会造成重绘的DOM操作
+* 避免大量使用会造成重排的DOM操作
 * 尽量使用ID选择器
+
+### 重排和重绘
+
+* 重排——当DOM的变化影响了元素的几何属性（宽或高），浏览器需要重新计算元素的几何属性，同样其他元素的几何属性和位置也会因此受到影响。浏览器会使渲染树中受到影响的部分失效，并重新构造渲染树。这个过程称为重排
+* 重绘——完成重排后，浏览器会重新绘制受影响的部分到屏幕
+
+很显然，每次重排，必然会导致重绘，那么，重排会在哪些情况下发生？
+
+* 添加或者删除可见的DOM元素
+* 元素位置改变
+* 元素尺寸改变
+* 元素内容改变（例如：一个文本被另一个不同尺寸的图片替代）
+* 页面渲染初始化（这个无法避免）
+* 浏览器窗口尺寸改变
+
+这些都是显而易见的，或许你已经有过这样的体会，不间断地改变浏览器窗口大小，导致UI反应迟钝（某些低版本IE下甚至直接挂掉），现在你可能恍然大悟，没错，正是一次次的重排重绘导致的！
 
 ## 事件
 
@@ -125,15 +141,15 @@ NodeList对象是基于DOM结构的动态查询，是双向绑定的。
 ### 事件绑定的方法？
 
 DOM0级绑定方法，即直接给元素相应的ontype类型赋值
-{% code lang:javascript %}
+```js
 somenode.onclick = function(){
     ...
 }
-{% endcode %}
+```
 DOM2级绑定方法
 * addEventaddEventListener(type,listener,useCapture)，参数type表示为“click”这种类型，参数useCapture表示是否使用事件捕获，默认为false，可不加。
 * attachEvent(type,listener)，**这种方法主要为了兼容IE8**，IE9可用第一种方法，其中参数type表示为“onclick”这种类型。
-{% code lang:javascript %}
+```js
 function addEvent(element, event, listener) {
     if(element.addEventListener) {
         element.addEventListener(event,listener,false);
@@ -143,7 +159,7 @@ function addEvent(element, event, listener) {
         element["on" + event] = listener;
     }
 }
-{% endcode %}
+```
 
 ### 关于事件对象event？
 
@@ -160,16 +176,16 @@ function addEvent(element, event, listener) {
 * 提高性能，不用循环逐个绑定相同事件
 * 新元素拥有原来绑定的事件，这样就不用每次都为添加的新元素绑定事件
 
-{% code lang:javascript %}
+```js
 var list = document.getElementsByTagName('ul')
 //list不是数组是HTMlCollection，所以不能用Array的方法循环如foreach和map
 list[0].addEventListener('click',function(event){
-    event.target.style.backgroundColor = 'red';//点击li后将其北京改为红色。
+    event.target.style.backgroundColor = 'red';//点击li后将其背景改为红色。
     console.log(event.currentTarget) // ul
     console.log(this) // ul
     console.log(event.target) //li
 })
-{% endcode %}
+```
 
 ## CSS(3)
 
@@ -230,7 +246,7 @@ list[0].addEventListener('click',function(event){
 ### 清除浮动的方法？
 
 我一般在父元素加一个clearfix类，用after伪元素，用zoom触发hashLayout兼容IE6-7
-{% code lang:css %}
+```css
 .clearfix:after{
     content: ".";
     display: block;
@@ -241,12 +257,12 @@ list[0].addEventListener('click',function(event){
 .clearfix{
     zoom: 1;
 }
-{% endcode %}
+```
 
 ### 写一个常见的三列布局？
 
 用float实现（兼容比较好）：
-{% code lang:html %}
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -283,10 +299,10 @@ list[0].addEventListener('click',function(event){
     <div class="right">right</div>
 </body>
 </html>
-{% endcode %}
+```
 
 用flex实现（方便）：
-{% code lang:html %}
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -321,4 +337,4 @@ list[0].addEventListener('click',function(event){
     </div>
 </body>
 </html>
-{% endcode %}
+```

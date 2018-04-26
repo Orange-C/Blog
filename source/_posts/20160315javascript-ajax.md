@@ -15,14 +15,14 @@ tags:
 
 ### 创建XMLHttpRequest对象
 
-{% code lang:javascript %}
+```js
 var XHR;
 if(window.XMLHttpRequest){
     XHR = new XMLHttpRequest();
 }else if(window.ActiveXObject){// IE6
     XHR = new ActiveXObject('Microsoft.XMLHTTP');
 }
-{% endcode %}
+```
 
 <!-- More -->
 
@@ -38,7 +38,7 @@ PS：ActiveXObject对象在IE11中已移除
 
 然后调用`send`方法，接受一个参数即要作为请求主体发送的数据
 
-{% code lang:javascript %}
+```js
 if(type == 'GET'){
     //拼接GET方法的URL
     if(typeof(data) != 'undefined'){
@@ -54,7 +54,7 @@ if(type == 'GET'){
     XHR.open(type,url,true);
     XHR.send(data);
 }
-{% endcode%}
+```
 
 PS: 理论上GET方法也可以有body，但一般来说约定GET的参数都放在URL上，所以type为GET时send的参数一般为null。
 
@@ -62,7 +62,7 @@ PS: 理论上GET方法也可以有body，但一般来说约定GET的参数都放
 
 当时XHR的`readyState`改变时就会触发`readystatechange`事件。通常`readyState`为4时表示已经接收到所有响应数据。可以根据XHR的`status`属性（即HTTP状态码）确定请求是否成功。
 
-{% code lang:javascript %}
+```js
 XHR.onreadystatechange = function(){
     if(XHR.readyState == 4){
         if(XHR.status >= 200 && XHR.status < 300 || XHR.status == 304){
@@ -72,7 +72,7 @@ XHR.onreadystatechange = function(){
         }
     }
 }
-{% endcode %}
+```
 
 到这里整个AJAX已经完成了，接下来就是调用回调函数实现需求了。
 
@@ -80,7 +80,7 @@ XHR.onreadystatechange = function(){
 
 曾经写的一个小作业
 
-{% code lang:javascript %}
+```js
 function ajax(url, options) {
     var XHR,i;
     if(window.XMLHttpRequest){
@@ -140,7 +140,7 @@ ajax(
         }
     }
 );
-{% endcode %}
+```
 
 ## 总结
 
