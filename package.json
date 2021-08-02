@@ -6,9 +6,9 @@
     "version": "3.9.0"
   },
   "scripts": {
-    "theme-init": "git submodule init;git submodule update",
+    "theme-init": "git submodule init && git submodule update",
     "dev": "hexo s --debug",
-    "pub": "hexo clean;hexo deploy",
+    "pub": "hexo clean && hexo generate && hexo deploy",
     "page": "hexo new"
   },
   "dependencies": {
