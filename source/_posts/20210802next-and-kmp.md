@@ -133,11 +133,11 @@ next[j]表示list[j-1]的最大k值，即原本的next[j-1]
 next数组代码如下
 ```java
 public static int[] getNext(int[] list) {
-    int[] next = new int[list.length];
+    int[] next = new int[list.length+1];
     next[0] = -1;
     int i = -1;
     int j = 0;
-    while(j < list.length-1) {
+    while(j < list.length) {
         if(i == -1 || list[i] == list[j]) {
             i++;
             j++;
