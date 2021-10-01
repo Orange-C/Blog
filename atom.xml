@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Oraaange&#39;s Blog</title>
+  
+  
+  <link href="/blog/atom.xml" rel="self"/>
+  
+  <link href="http://orange-c.github.io/blog/"/>
+  <updated>2021-10-01T17:39:08.827Z</updated>
+  <id>http://orange-c.github.io/blog/</id>
+  
+  <author>
+    <name>Oraaange</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>next数组与KMP算法</title>
+    <link href="http://orange-c.github.io/blog/2021/08/02/next-and-kmp/"/>
+    <id>http://orange-c.github.io/blog/2021/08/02/next-and-kmp/</id>
+    <published>2021-08-02T16:50:45.000Z</published>
+    <updated>2021-10-01T17:39:08.827Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;next数组&quot;&gt;&lt;a href=&quot;#next数组&quot; class=&quot;headerlink&quot; title=&quot;next数组&quot;&gt;&lt;/a&gt;next数组&lt;/h2&gt;&lt;h3 id=&quot;定义&quot;&gt;&lt;a href=&quot;#定义&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Algorithm" scheme="http://orange-c.github.io/blog/tags/Algorithm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《遗留系统：重建实战》读书笔记</title>
+    <link href="http://orange-c.github.io/blog/2018/04/16/note-of-re-engineering-legacy-software/"/>
+    <id>http://orange-c.github.io/blog/2018/04/16/note-of-re-engineering-legacy-software/</id>
+    <published>2018-04-16T22:56:16.000Z</published>
+    <updated>2021-09-14T15:26:24.837Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;之前在组内负责核心项目的重构（详见&lt;a href=&quot;/blog/2018/03/20/project-re-engineering-2017/&quot;&gt;记一次项目的重构&lt;/a&gt;），刚好在&lt;a href=&quot;https://www.zhihu.com/people/phodal&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Phodal&lt;/a&gt;在&lt;a href=&quot;https://zhuanlan.zhihu.com/p/33262020&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;文章&lt;/a&gt;里推荐了这本书，虽然当时重构工作已经进行了大半，但个人工作经验毕竟不足，希望能从前辈那里系统地学习一下软件重构之道，当时就在京东下了单（&lt;a href=&quot;https://item.jd.com/12185555.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;购书链接&lt;/a&gt;，想完整阅读的推荐购买）。阅读时发现很多场景和我在重构时遇到的问题类似，解决方案也是比我更加全面和成熟，对于准备着手重构或者正在进行重构的程序员来说，的确是一本好书。&lt;/p&gt;
+&lt;p&gt;此书主要讲重建遗留系统所需要的工作，不仅有源代码重构的具体方法论，还包含了心理建设，团队交流，基础设施优化等多个方面，通过作者自身经历的重建项目详细地介绍了如何完成一次优秀的重建。虽然书中代码片段主要为Java，但大部分内容还是和软件工程相关，各语言各方向有兴趣的程序员都可以阅读。&lt;a href=&quot;https://www.zhihu.com/people/phodal&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Phodal&lt;/a&gt;推荐的阅读人群：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有一定工作经验（2~3 年），并且对代码有追求的程序员。&lt;/li&gt;
+&lt;li&gt;面向复杂的遗留/旧系统，无法下手的项目&lt;/li&gt;
+&lt;li&gt;熟悉面向对象的程序员&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是我阅读过程中的读书笔记（数字代表章节）&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="notes" scheme="http://orange-c.github.io/blog/categories/notes/"/>
+    
+    
+      <category term="Reengineering" scheme="http://orange-c.github.io/blog/tags/Reengineering/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>记一次项目重构</title>
+    <link href="http://orange-c.github.io/blog/2018/03/20/project-re-engineering-2017/"/>
+    <id>http://orange-c.github.io/blog/2018/03/20/project-re-engineering-2017/</id>
+    <published>2018-03-20T21:52:30.000Z</published>
+    <updated>2021-09-14T15:26:24.837Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;为什么要写这么一篇好像和业务关系比较大的博客呢？一方面这算是去年的主要工作，前前后后加上探索和收尾大概花了5个月的时间（除了中间正式迁移的一个月之外，其他时间都是和日常业务开发并行一起在做），打算好好写一下就当是去年的工作小结了，另一方面，这次重构的确给我带来了很大的提升，想写一下学到的东西，不光是技术方面的探索，还有看问题的角度，以及在重构工作中各个阶段的把控，都学到了很多东西，有些可能可以水一篇博客出来，有读者感兴趣的话再写吧（逃）。&lt;/p&gt;
+&lt;p&gt;所以这篇文章可能有那么一点碎碎念，我会尽量提取一些关键的内容在各章节的开始部分。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="notes" scheme="http://orange-c.github.io/blog/categories/notes/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="React" scheme="http://orange-c.github.io/blog/tags/React/"/>
+    
+      <category term="Reengineering" scheme="http://orange-c.github.io/blog/tags/Reengineering/"/>
+    
+      <category term="Koa" scheme="http://orange-c.github.io/blog/tags/Koa/"/>
+    
+      <category term="nodejs" scheme="http://orange-c.github.io/blog/tags/nodejs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>git submodule 使用指南</title>
+    <link href="http://orange-c.github.io/blog/2018/01/05/git-submodule-guide/"/>
+    <id>http://orange-c.github.io/blog/2018/01/05/git-submodule-guide/</id>
+    <published>2018-01-06T00:58:12.000Z</published>
+    <updated>2021-09-14T15:26:24.837Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&lt;code&gt;submodule&lt;/code&gt;是git自带的子模块系统，我们先看官网对于&lt;code&gt;submodule&lt;/code&gt;的&lt;a href=&quot;https://git-scm.com/docs/gitsubmodules&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;定义&lt;/a&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A submodule is a repository embedded inside another repository. The submodule has its own history; the repository it is embedded in is called a superproject.&lt;br&gt;submodule是嵌入在另一个项目中的项目，它拥有自己的git历史信息。而被嵌入的项目叫做上层项目。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这一段比较拗口，我用个人的理解再描述一下：我们可以在一个git项目中嵌入另一个git项目，被嵌入的叫做&lt;code&gt;submodule&lt;/code&gt;，因为&lt;code&gt;submodule&lt;/code&gt;本来就是一个&lt;strong&gt;独立可用的git项目（记住这一点）&lt;/strong&gt;，所以它有自己的历史信息（branch，commit，etc.），也可以进行基本的git操作（pull/push，merge，etc.）。唯一不同的就是被嵌入的上层项目会记录submodule的改动（以commit ID的形式），并把它作为自身改动提交上去。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="tools" scheme="http://orange-c.github.io/blog/categories/tools/"/>
+    
+    
+      <category term="git" scheme="http://orange-c.github.io/blog/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一种基于git分支的开发和部署流程</title>
+    <link href="http://orange-c.github.io/blog/2017/03/20/deploy-with-git/"/>
+    <id>http://orange-c.github.io/blog/2017/03/20/deploy-with-git/</id>
+    <published>2017-03-20T22:05:20.000Z</published>
+    <updated>2021-09-14T15:26:24.837Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;如今在多人协作开发的团队中，免不了要用到版本控制系统（Version control system），常见的有&lt;code&gt;SVN&lt;/code&gt;和&lt;code&gt;Git&lt;/code&gt;。但是当公司和团队增长到一定程度时，就需要考虑一些涉及到稳定性的问题。比如&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如何严格控制线上代码的合并权限&lt;/li&gt;
+&lt;li&gt;如何管理多个并行开发的feature的测试&lt;/li&gt;
+&lt;li&gt;线上产生问题时如何快速回滚&lt;/li&gt;
+&lt;li&gt;如何减少开发人员合并代码的人工疏漏&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这篇文章会介绍一种基于&lt;code&gt;git&lt;/code&gt;分支的开发部署流程，大部分思路来自于实习部门的实践，我对其做了一些抽象和补充。相信大公司内部肯定有自己成熟的开发和部署流程，这边只是简单介绍思路，推荐开发还比较原始的小公司或者小团队使用，可以更好地管理项目迭代。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="tools" scheme="http://orange-c.github.io/blog/categories/tools/"/>
+    
+    
+      <category term="git" scheme="http://orange-c.github.io/blog/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谈谈react组件设计</title>
+    <link href="http://orange-c.github.io/blog/2016/10/02/react-component-design/"/>
+    <id>http://orange-c.github.io/blog/2016/10/02/react-component-design/</id>
+    <published>2016-10-02T21:55:06.000Z</published>
+    <updated>2021-09-14T15:26:24.837Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;从事react开发已经四个月有余，期间设计了不少业务组件，也魔改了一些别人的组件。在度过这一段非常react的开发过程之后，我想大致分享一下react组件设计的一些基础知识（以及坑）。&lt;/p&gt;
+&lt;h2 id=&quot;组件划分&quot;&gt;&lt;a href=&quot;#组件划分&quot; class=&quot;headerlink&quot; title=&quot;组件划分&quot;&gt;&lt;/a&gt;组件划分&lt;/h2&gt;&lt;p&gt;在设计组件之前，我们首先要清楚在整个设计中哪些部分应该独立出来成为一个组件，哪些部分应该交给props控制，哪些部分是静态属性无需变动，我将其称之为组件划分。先看一下下面这个组件划分示意图↓&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/blog/images/component.png&quot; alt=&quot;component&quot;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到它将设计图划分为一个个嵌套的容器，其中有交互的部分如搜索框要成为一个组件，固定的属性比如表头的Name和Price是不变动的所以没有划分为组件，而是作为表格组件的静态样式。&lt;/p&gt;
+&lt;h2 id=&quot;组件分类&quot;&gt;&lt;a href=&quot;#组件分类&quot; class=&quot;headerlink&quot; title=&quot;组件分类&quot;&gt;&lt;/a&gt;组件分类&lt;/h2&gt;&lt;p&gt;在划分之后我们脑海中对应会有这么一个组件树的样子出来。&lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;lt;ProductTable&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;lt;Search /&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &amp;lt;Table&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;lt;Block&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;lt;BlockItem /&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;lt;BlockItem /&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;lt;&lt;span class=&quot;regexp&quot;&gt;/Block&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;regexp&quot;&gt;            &amp;lt;Block&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;regexp&quot;&gt;                &amp;lt;BlockItem /&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                &amp;lt;BlockItem /&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;lt;&lt;span class=&quot;regexp&quot;&gt;/Block&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;regexp&quot;&gt;        &amp;lt;/&lt;/span&gt;Table&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;lt;&lt;span class=&quot;regexp&quot;&gt;/ProductTable&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;regexp&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="React" scheme="http://orange-c.github.io/blog/tags/React/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>js单元测试调研</title>
+    <link href="http://orange-c.github.io/blog/2016/06/10/javascript-unit-test/"/>
+    <id>http://orange-c.github.io/blog/2016/06/10/javascript-unit-test/</id>
+    <published>2016-06-10T20:30:36.000Z</published>
+    <updated>2021-09-14T15:26:24.836Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;之前我负责给项目搭建单元测试环境，对当前的web前端单元测试方案调查了一番，顺便看了一点E2E测试的方案。当时在团队内做了一次技术分享并且与java后端开发人员交流了一下关于测试的看法。我打算在这篇文章总结一下这次工作的收获。&lt;/p&gt;
+&lt;h2 id=&quot;关于测试的基础知识&quot;&gt;&lt;a href=&quot;#关于测试的基础知识&quot; class=&quot;headerlink&quot; title=&quot;关于测试的基础知识&quot;&gt;&lt;/a&gt;关于测试的基础知识&lt;/h2&gt;&lt;p&gt;解释一些关于测试的基础概念&lt;/p&gt;
+&lt;h3 id=&quot;什么是测试&quot;&gt;&lt;a href=&quot;#什么是测试&quot; class=&quot;headerlink&quot; title=&quot;什么是测试&quot;&gt;&lt;/a&gt;什么是测试&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;wiki&lt;/a&gt;上这么描述：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;软件测试的经典定义是：在规定的条件下对程序进行操作，以发现程序错误，衡量软件质量，并对其是否能满足设计要求进行评估的过程。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;通俗地说，测试就是看软件是否达到要求，然而这要求有许多种，有的来自程序本身复杂度，有的来自客户需求，所以也诞生了许多测试方法，包括黑盒白盒，单元测试，集成测试等等。在复杂的软件产品中，测试是保证软件质量重要的一环。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="test" scheme="http://orange-c.github.io/blog/tags/test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>前端面试复习-2-HTML&amp;CSS</title>
+    <link href="http://orange-c.github.io/blog/2016/03/27/fe-interview-2/"/>
+    <id>http://orange-c.github.io/blog/2016/03/27/fe-interview-2/</id>
+    <published>2016-03-27T20:34:07.000Z</published>
+    <updated>2021-09-14T15:26:24.836Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;HTML-5&quot;&gt;&lt;a href=&quot;#HTML-5&quot; class=&quot;headerlink&quot; title=&quot;HTML(5)&quot;&gt;&lt;/a&gt;HTML(5)&lt;/h2&gt;&lt;h3 id=&quot;HTML5新特性&quot;&gt;&lt;a href=&quot;#HTML5新特性&quot; class=&quot;headerlink&quot; title=&quot;HTML5新特性&quot;&gt;&lt;/a&gt;HTML5新特性&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;语义化的标签（header,nav,footer,aside,article,section）&lt;/li&gt;
+&lt;li&gt;拖放事件（drag类事件）&lt;/li&gt;
+&lt;li&gt;跨文档消息传递（postMessage）&lt;/li&gt;
+&lt;li&gt;媒体元素（audio，video标签）&lt;/li&gt;
+&lt;li&gt;画布（Canvas） API&lt;/li&gt;
+&lt;li&gt;地理位置定位（navigator.geolocation）API&lt;/li&gt;
+&lt;li&gt;历史状态管理（更新history对象，pushState等）&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="interview" scheme="http://orange-c.github.io/blog/categories/interview/"/>
+    
+    
+      <category term="interview" scheme="http://orange-c.github.io/blog/tags/interview/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>前端面试复习-1-浏览器和计算机网络等</title>
+    <link href="http://orange-c.github.io/blog/2016/03/25/fe-interview-1/"/>
+    <id>http://orange-c.github.io/blog/2016/03/25/fe-interview-1/</id>
+    <published>2016-03-26T04:11:44.000Z</published>
+    <updated>2021-09-14T15:26:24.836Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;打算好好复习面试要用到的知识点，也算是对自己学习的一个总结，一直以来我的学习都是缺乏笔记的&lt;del&gt;（喂你怎么考上大学的？&lt;/del&gt;。这次正好培养一下这个习惯。这些笔记可能在我之后看到有错误或者新东西之后继续更新更正，也算是完善一下自己的知识树吧。&lt;/p&gt;
+&lt;h2 id=&quot;浏览器&quot;&gt;&lt;a href=&quot;#浏览器&quot; class=&quot;headerlink&quot; title=&quot;浏览器&quot;&gt;&lt;/a&gt;浏览器&lt;/h2&gt;&lt;h3 id=&quot;常见的浏览器内核有哪些？&quot;&gt;&lt;a href=&quot;#常见的浏览器内核有哪些？&quot; class=&quot;headerlink&quot; title=&quot;常见的浏览器内核有哪些？&quot;&gt;&lt;/a&gt;常见的浏览器内核有哪些？&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Trident（IE,360搜狗的兼容模式）&lt;/li&gt;
+&lt;li&gt;Gecko（Firefox）&lt;/li&gt;
+&lt;li&gt;Webkit（Chrome,Safari,android Chrome,android,ios,360搜狗的极速模式）&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="interview" scheme="http://orange-c.github.io/blog/categories/interview/"/>
+    
+    
+      <category term="interview" scheme="http://orange-c.github.io/blog/tags/interview/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谈谈CORS跨域</title>
+    <link href="http://orange-c.github.io/blog/2016/03/22/html5-CORS/"/>
+    <id>http://orange-c.github.io/blog/2016/03/22/html5-CORS/</id>
+    <published>2016-03-22T21:04:14.000Z</published>
+    <updated>2021-09-14T15:26:24.836Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;前几天面试的时候被问到了关于跨域请求的问题，我就说用JSONP，iframe这些。面试官姐姐又追问我还有其他的吗，我表示不知道（一脸懵逼），后来告诉还有CORS，这几天就回来研究了下这个，发现是属于XMLHttpRequest2中的一个特性，而且果不其然老IE（IE8/9）是用其他API实现的。&lt;/p&gt;
+&lt;h2 id=&quot;什么是CORS&quot;&gt;&lt;a href=&quot;#什么是CORS&quot; class=&quot;headerlink&quot; title=&quot;什么是CORS&quot;&gt;&lt;/a&gt;什么是CORS&lt;/h2&gt;&lt;p&gt;CORS全称是Cross-Origin Resource Sharing(跨域资源共享)，是W3C提出的跨域请求方案，需要服务器端的支持。与JSONP相比，主要有以下几点不同。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;JSONP只能实现GET请求。CORS支持所有类型的HTTP请求&lt;/li&gt;
+&lt;li&gt;使用CORS，开发者可以用普通的XMLHttpRequest发起请求和获得数据，相比JSONP有更好的错误处理&lt;/li&gt;
+&lt;li&gt;JSONP兼容老的浏览器。不过考虑到IE8/9能够通过XDomainRequest实现CORS请求，所以主流浏览器基本实现CORS。&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="HTML" scheme="http://orange-c.github.io/blog/categories/HTML/"/>
+    
+    
+      <category term="CORS" scheme="http://orange-c.github.io/blog/tags/CORS/"/>
+    
+      <category term="XMLHttpRequest" scheme="http://orange-c.github.io/blog/tags/XMLHttpRequest/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谈谈JavaScript的作用域链</title>
+    <link href="http://orange-c.github.io/blog/2016/03/21/javascript-scope/"/>
+    <id>http://orange-c.github.io/blog/2016/03/21/javascript-scope/</id>
+    <published>2016-03-22T02:59:14.000Z</published>
+    <updated>2021-09-14T15:26:24.836Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;作用域链，闭包，原型链算是JavaScript中比较有特色的三个知识点。我会分三篇文章讲讲我对于这三个东西的理解。&lt;/p&gt;
+&lt;h2 id=&quot;JavaScript中的作用域&quot;&gt;&lt;a href=&quot;#JavaScript中的作用域&quot; class=&quot;headerlink&quot; title=&quot;JavaScript中的作用域&quot;&gt;&lt;/a&gt;JavaScript中的作用域&lt;/h2&gt;&lt;p&gt;每一种语言都有作用域的概念，所谓作用域就是变量与函数的可用范围，确定了变量与函数的可见性和生命周期。&lt;br&gt;JavaScript中有两种作用域，全局作用域和局部作用域&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="scope" scheme="http://orange-c.github.io/blog/tags/scope/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谈谈JavaScript中的this</title>
+    <link href="http://orange-c.github.io/blog/2016/03/16/javascript-this/"/>
+    <id>http://orange-c.github.io/blog/2016/03/16/javascript-this/</id>
+    <published>2016-03-17T01:25:42.000Z</published>
+    <updated>2021-09-14T15:26:24.835Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;何为this&quot;&gt;&lt;a href=&quot;#何为this&quot; class=&quot;headerlink&quot; title=&quot;何为this&quot;&gt;&lt;/a&gt;何为this&lt;/h2&gt;&lt;p&gt;一般而言，在JavaScript中，this指向函数&lt;strong&gt;执行&lt;/strong&gt;时的当前对象。换句话说，这个关键字与函数的执行环境有关，与声明环境无关。所以this的指向要看如何去调用这个函数而不是声明。&lt;/p&gt;
+&lt;h2 id=&quot;不同调用方式中的this&quot;&gt;&lt;a href=&quot;#不同调用方式中的this&quot; class=&quot;headerlink&quot; title=&quot;不同调用方式中的this&quot;&gt;&lt;/a&gt;不同调用方式中的this&lt;/h2&gt;&lt;h3 id=&quot;作为对象的方法调用&quot;&gt;&lt;a href=&quot;#作为对象的方法调用&quot; class=&quot;headerlink&quot; title=&quot;作为对象的方法调用&quot;&gt;&lt;/a&gt;作为对象的方法调用&lt;/h3&gt;&lt;p&gt;把函数赋值给对象的一个属性，然后&lt;strong&gt;通过该对象&lt;/strong&gt;调用该方法，此时函数的执行环境就是这个对象，所以this指向该对象&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="this" scheme="http://orange-c.github.io/blog/tags/this/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JavaScript实现Ajax</title>
+    <link href="http://orange-c.github.io/blog/2016/03/15/javascript-ajax/"/>
+    <id>http://orange-c.github.io/blog/2016/03/15/javascript-ajax/</id>
+    <published>2016-03-16T03:44:28.000Z</published>
+    <updated>2021-09-14T15:26:24.835Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;原生javascript实现ajax是一个比较老套但经常出现的面试题，主要是为了筛选掉长期依赖类库编程的前端。对于新手也是个不错的练习。&lt;/p&gt;
+&lt;h2 id=&quot;Ajax实现步骤&quot;&gt;&lt;a href=&quot;#Ajax实现步骤&quot; class=&quot;headerlink&quot; title=&quot;Ajax实现步骤&quot;&gt;&lt;/a&gt;Ajax实现步骤&lt;/h2&gt;&lt;h3 id=&quot;创建XMLHttpRequest对象&quot;&gt;&lt;a href=&quot;#创建XMLHttpRequest对象&quot; class=&quot;headerlink&quot; title=&quot;创建XMLHttpRequest对象&quot;&gt;&lt;/a&gt;创建XMLHttpRequest对象&lt;/h3&gt;&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; XHR;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.XMLHttpRequest)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    XHR = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; XMLHttpRequest();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.ActiveXObject)&amp;#123;&lt;span class=&quot;comment&quot;&gt;// IE6&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    XHR = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; ActiveXObject(&lt;span class=&quot;string&quot;&gt;&#39;Microsoft.XMLHTTP&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://orange-c.github.io/blog/tags/JavaScript/"/>
+    
+      <category term="ajax" scheme="http://orange-c.github.io/blog/tags/ajax/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://orange-c.github.io/blog/2016/03/14/hello-world/"/>
+    <id>http://orange-c.github.io/blog/2016/03/14/hello-world/</id>
+    <published>2016-03-15T04:07:31.000Z</published>
+    <updated>2021-09-14T15:26:24.835Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;博客上线&quot;&gt;&lt;a href=&quot;#博客上线&quot; class=&quot;headerlink&quot; title=&quot;博客上线&quot;&gt;&lt;/a&gt;博客上线&lt;/h2&gt;&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;&#39;hello world&#39;&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;//Hi&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;用&lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;+github page搭建了这个博客，主题采用的是&lt;a href=&quot;http://theme-next.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;NexT&lt;/a&gt;。暂时不会变动博客了，静下心好好学基础&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="随笔" scheme="http://orange-c.github.io/blog/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+  </entry>
+  
+</feed>

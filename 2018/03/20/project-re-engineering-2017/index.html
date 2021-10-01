@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/blog/css/main.css?v=6.1.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/favicon.ico?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言为什么要写这么一篇好像和业务关系比较大的博客呢？一方面这算是去年的主要工作，前前后后加上探索和收尾大概花了5个月的时间（除了中间正式迁移的一个月之外，其他时间都是和日常业务开发并行一起在做），打算好好写一下就当是去年的工作小结了，另一方面，这次重构的确给我带来了很大的提升，想写一下学到的东西，不光是技术方面的探索，还有看问题的角度，以及在重构工作中各个阶段的把控，都学到了很多东西，有些可能可以">
+<meta name="keywords" content="JavaScript,React,Reengineering,Koa,nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次项目重构">
+<meta property="og:url" content="http://orange-c.github.io/blog/2018/03/20/project-re-engineering-2017/index.html">
+<meta property="og:site_name" content="Oraaange&#39;s Blog">
+<meta property="og:description" content="前言为什么要写这么一篇好像和业务关系比较大的博客呢？一方面这算是去年的主要工作，前前后后加上探索和收尾大概花了5个月的时间（除了中间正式迁移的一个月之外，其他时间都是和日常业务开发并行一起在做），打算好好写一下就当是去年的工作小结了，另一方面，这次重构的确给我带来了很大的提升，想写一下学到的东西，不光是技术方面的探索，还有看问题的角度，以及在重构工作中各个阶段的把控，都学到了很多东西，有些可能可以">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-09-14T15:26:24.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次项目重构">
+<meta name="twitter:description" content="前言为什么要写这么一篇好像和业务关系比较大的博客呢？一方面这算是去年的主要工作，前前后后加上探索和收尾大概花了5个月的时间（除了中间正式迁移的一个月之外，其他时间都是和日常业务开发并行一起在做），打算好好写一下就当是去年的工作小结了，另一方面，这次重构的确给我带来了很大的提升，想写一下学到的东西，不光是技术方面的探索，还有看问题的角度，以及在重构工作中各个阶段的把控，都学到了很多东西，有些可能可以">
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Oraaange's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://orange-c.github.io/blog/2018/03/20/project-re-engineering-2017/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>记一次项目重构 | Oraaange's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117282740-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117282740-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Oraaange's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home menu-item-active">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://orange-c.github.io/blog/blog/2018/03/20/project-re-engineering-2017/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Oraaange">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/blog/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oraaange's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">记一次项目重构</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-20T14:52:30-07:00">2018-03-20</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/notes/" itemprop="url" rel="index"><span itemprop="name">notes</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/03/20/project-re-engineering-2017/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/blog/2018/03/20/project-re-engineering-2017/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为什么要写这么一篇好像和业务关系比较大的博客呢？一方面这算是去年的主要工作，前前后后加上探索和收尾大概花了5个月的时间（除了中间正式迁移的一个月之外，其他时间都是和日常业务开发并行一起在做），打算好好写一下就当是去年的工作小结了，另一方面，这次重构的确给我带来了很大的提升，想写一下学到的东西，不光是技术方面的探索，还有看问题的角度，以及在重构工作中各个阶段的把控，都学到了很多东西，有些可能可以水一篇博客出来，有读者感兴趣的话再写吧（逃）。</p>
+<p>所以这篇文章可能有那么一点碎碎念，我会尽量提取一些关键的内容在各章节的开始部分。</p>
+<a id="more"></a>
+<h2 id="重构之前"><a href="#重构之前" class="headerlink" title="重构之前"></a>重构之前</h2><p>后续部分中会将项目简称rainbow。rainbow技术上是一个前端基于react，中台基于koa的内部项目，中台node对接数据端API。因为历史原因，rainbow包含了rainbow-red，rainbow-yellow，rainbow-blue等多个项目用于支持不同的业务线，每个都是独立的node服务和前端页面，但是各个项目之间功能又大同小异，维护和扩展一直以来基本是靠复制粘贴，要开新业务线就要复制一个项目，然后花费大量时间改耦合部分，同理在新业务线中开功能也是这个步骤。</p>
+<p>这次重构的宏观目标就是把rainbow-red，rainbow-yellow，rainbow-blue多个项目合并成为rainbow-platform，统一维护功能模块，同时实现业务线的快速扩展。</p>
+<h2 id="一切开始之前——基础设施改善"><a href="#一切开始之前——基础设施改善" class="headerlink" title="一切开始之前——基础设施改善"></a>一切开始之前——基础设施改善</h2><blockquote>
+<p>工欲善其事，必先利其器</p>
+</blockquote>
+<p>一个优秀的项目应该是从本地开发到上线整个流程都有良好的体验，这样才能在后续的开发和重构工作中获得更高的效率。</p>
+<h3 id="本地开发环境"><a href="#本地开发环境" class="headerlink" title="本地开发环境"></a>本地开发环境</h3><p>优秀的开发环境应该包含以下几点：</p>
+<ol>
+<li>一键搭建</li>
+<li>开发时编译时间占比小</li>
+<li>方便调试</li>
+</ol>
+<h4 id="项目开发环境"><a href="#项目开发环境" class="headerlink" title="项目开发环境"></a>项目开发环境</h4><p>因为历史原因，最大的rainbow项目在webpack编译时大概有4000多个module，用的还是webpack1和很老的配置，初次打包和rebuild都需要好几分钟，基本是处于一个开发十分不方便的状态。而且因为用的是dev-middleware，有时候在需要只调试node代码的时候，每次node重启都会进行webpack编译，十分浪费时间。</p>
+<p>将webpack从1升级到了3，用dll拆出了公共模块放在cdn上，用来加快编译，还做了一些资源拆分和异步加载，加上了hash值缓存等等，大部分还是一些webpack配置工程师的活。说实话webpack一直被人诟病配置麻烦，主要还是黑盒式的配置加上自由度太大，导致很多东西文档实在写不全（不过webpack的文档的确有点糟糕），多看看相关文章积累经验后面就轻车熟路了，不算什么有技术难度的事情。</p>
+<p>一顿操作下来本地开发初次build大概在40秒左右，rebuild3秒左右，本来还打算修复hotReload，但是因为当时react-hot-loader问题有点多，而且开会讨论之后大部分人觉得有了hotReload不太方便在chrome上面调试样式，所以就没做了。</p>
+<p>然后加入了nobuild模式，配合node的–inspect和vscode的调试工具，调试node的体验也是大大提升。</p>
+<h4 id="组件开发环境"><a href="#组件开发环境" class="headerlink" title="组件开发环境"></a>组件开发环境</h4><p>团队内有一些公共组件是以npm包的形式放在内部npm上的，但是基本不能本地开发，之前的开发都是靠发布到npm上再下载下来调试，<del>以至于出现了99.0.124这种神奇的版本号</del>。而且每个组件都打包了所有依赖到index.js中，以至于每个组件大概都有1m左右。</p>
+<p>首先用项目配置里的loader配置同样做了一份用于组件的webpack配置，支持本地watch rebuild，不打包外部依赖，最后生成umd规范的组件和对应的css文件，然后是分享了一下npm link/unlink的开发模式以及package.json中peerdependence、dependence、devDependence的用法，版本号的规范根据<a href="http://semver.org/lang/zh-CN/" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a>，并要求组件发布要写CHANGELOG。</p>
+<p>这样下来公共组件总算是有序了一点，最近打算将各个视图组件和antd一样统一起来，用babel-plugin-import实现按需加载。</p>
+<h4 id="内部脚手架"><a href="#内部脚手架" class="headerlink" title="内部脚手架"></a>内部脚手架</h4><p>在上面两份配置成熟之后用对应配置写了一个脚手架工具rainbow-init，用于快速生成新项目，这样算是统一了各个项目的开发环境配置。</p>
+<h3 id="构建和部署"><a href="#构建和部署" class="headerlink" title="构建和部署"></a>构建和部署</h3><p>体验良好的部署流程应该是一键式黑盒式的，不需要开发者关心部署的环境问题，部署顺序问题。</p>
+<p>首先是同步了各个机器的环境，包括node版本和pm2版本等等（顺便修复了node7.6版本导致的内存泄漏问题）。公司内部机器的部署工具主要是用于后端服务的，所以对前端的部署不太友好，之前也是一直没有区分前端和node的部署，都是直接机器上强覆盖重启。</p>
+<p>我重新写了一下构建和部署的shell和node脚本，前端静态资源自动发布到内部cdn上，加上了html部署的流程，保留了原来node服务部署的流程。这样倚赖就能做到前端和node的分开部署，也防止了前端部署代码导致node服务重启的问题。部署流程如下：</p>
+<ul>
+<li>前端：静态资源发布cdn，html部署</li>
+<li>node：node代码全量覆盖，重启服务</li>
+</ul>
+<h3 id="整合工具"><a href="#整合工具" class="headerlink" title="整合工具"></a>整合工具</h3><p>最后将上述的所有配置和脚本整合到了rainbow-tools里面，所有项目和组件直接依赖这个包，做了一个强统一。不过所有配置都支持传自定义配置覆盖默认，以便部分项目的特殊需求。</p>
+<p>到此为止基本项目的开发和部署体验已经满足了大部开发者的需求，并且也做到了统一的管理，在重写配置的时候顺便解决了资源加载问题和一些bug，可以说项目质量和团队的整体开发效率都有了很大的提升。</p>
+<h2 id="升级依赖-amp-amp-重写基础模块"><a href="#升级依赖-amp-amp-重写基础模块" class="headerlink" title="升级依赖 &amp;&amp; 重写基础模块"></a>升级依赖 &amp;&amp; 重写基础模块</h2><p>在工具完善之后，接下来要做的便是夯实地基。在大型项目中，往往有很多基础的模块，被各个业务模块依赖，理想状态下这些模块应该是完全业务隔离的，但随着项目不断迭代，开发团队更替，这些模块难免会混入许多业务逻辑，增加了复杂度，导致越来越难扩展，间接拖累了业务开发。所以在重构时如果忽视了这些模块，只重构看起来有问题的上层模块，那就是治标不治本。</p>
+<p>rainbow在我来之前有过几次重构的尝试，但传统主义的开发者因为担心基础模块改动可能带来的问题一直没有改动，导致前几次重构基本都是换汤不换药，问题还在，项目质量没有明显的提升。这次重构前刚好有一个小型项目要开发，我申请将它从rainbow项目中脱离出来独立开发，用它做试验重写了基础模块，下面我分前端和node两部分讲讲重写的基础部分。</p>
+<h3 id="web前端"><a href="#web前端" class="headerlink" title="web前端"></a>web前端</h3><ol>
+<li>重写了封装的请求模块，支持async/await，将错误情况手动throw到promise的catch中统一处理</li>
+<li>将前端路由从react-router3升级到了4，支持组件内配置路由，不依赖主页面的路由配置，保证组件独立性方便后面拆分</li>
+</ol>
+<h3 id="node"><a href="#node" class="headerlink" title="node"></a>node</h3><ol>
+<li>将koa1升级到koa2，支持async/await</li>
+<li>重写了请求模块，更方便地支持转发和组合请求</li>
+<li>因为node作为BFF层大部分请求都是转发java，将原先一个个注册的转发路由全部统一至<code>router.all(&#39;/redirect/*&#39;)</code>下</li>
+<li>重写了log模块，依赖<code>log4js</code>，分级别分时生成log文件，同时整理了log信息</li>
+</ol>
+<h2 id="业务架构探索"><a href="#业务架构探索" class="headerlink" title="业务架构探索"></a>业务架构探索</h2><p>到这一步，基本非业务的内容都整理的差不多了，到这一步才真正开始处理棘手的业务模块问题，不过有了前面的工作，这边的难度也是减小了不少。我们再来回顾一下之前的重构目标：</p>
+<blockquote>
+<p>这次重构的宏观目标就是把rainbow-red，rainbow-yellow，rainbow-blue多个项目合并成为rainbow-platform，统一维护功能模块，同时实现业务线的快速扩展。</p>
+</blockquote>
+<p>可以看到，要实现这么一个统一的平台，肯定不能和原来一样以业务线划分项目，而是要弱化业务线的角色，将其作为一个变量，把重心放到功能模块上面，以功能模块为基础构建项目，功能模块中各个业务线feature的区分用模块封装的featureMap实现，这就是platform项目的业务线入口和功能库概念。</p>
+<h3 id="业务线入口-amp-amp-功能库"><a href="#业务线入口-amp-amp-功能库" class="headerlink" title="业务线入口 &amp;&amp; 功能库"></a>业务线入口 &amp;&amp; 功能库</h3><p>业务线入口在代码层的体现就是一份配置，代表这个业务线有哪些功能以及功能中的哪些feature，具体如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> APP_CONFIG = [&#123;</span><br><span class="line">    name: <span class="string">'red'</span>, <span class="comment">// app名称</span></span><br><span class="line">    features: [ <span class="comment">// app功能模块</span></span><br><span class="line">        <span class="string">'overview'</span>,</span><br><span class="line">        <span class="string">'map'</span>,</span><br><span class="line">        <span class="string">'geofence'</span>,</span><br><span class="line">        &#123;</span><br><span class="line">            value: <span class="string">'tide'</span>,</span><br><span class="line">            options: &#123; <span class="comment">// options表示该功能的feature配置，具体实现封装在模块中</span></span><br><span class="line">                lock: <span class="literal">true</span>,</span><br><span class="line">                search: <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    ]</span><br><span class="line">&#125;, &#123;</span><br><span class="line">    name: <span class="string">'blue'</span>,</span><br><span class="line">    features: [</span><br><span class="line">        <span class="string">'overview'</span>,</span><br><span class="line">        <span class="string">'map'</span>, </span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>初始化时候直接读取这份配置即可生成包含对应功能的app入口，每个名字对应功能库中的一个功能模块，一般模块都是交给一个具体的开发负责，封装了模块各种feature，可以用featureMap选择开启或关闭。</p>
+<h3 id="弱化node层业务逻辑"><a href="#弱化node层业务逻辑" class="headerlink" title="弱化node层业务逻辑"></a>弱化node层业务逻辑</h3><p>node作为rainbow的BFF层，在项目里较多的应用就是承担了一个转发和合并请求的角色。之前在重写基础模块的时候我重写了node的请求模块，统一了node层的转发请求，其实目的就是为了弱化<br>node层的业务逻辑，因为合并请求的场景并不是特别多，如果转发统一的话，那么在开发时就不需要修改node层的代码，直接更新前端资源即可，这样在上线时也有较好的用户体验。</p>
+<p>当然除了请求之外，node层还承担了其他业务，包括登录和文件下载。</p>
+<ol>
+<li>登录模块用的是公司内部的登录系统，我将其中的业务线配置放在了前端，这样的话，node层登录接口只需要接受不同的配置信息就可以实现各个业务线的登录。</li>
+<li>文件下载模块，主要是各种表格，我将<code>xlsx</code>库放在了前端，实现了前端的文件下载，避免了在服务器上进行文件操作，也是减少了很多复杂度。不过为了数据安全考虑，还是保留了一个下载的log接口，以便前端文件下载时记录用户信息。</li>
+</ol>
+<p>当然，最后难免还是有部分业务请求要在node层进行拆分和聚合，这样的case也是在重构中大部分能挪到前端的都放在了前端。node层业务逻辑的减轻对于整体水平不高的团队来说还是有不错的减负效果。</p>
+<h2 id="正式迁移"><a href="#正式迁移" class="headerlink" title="正式迁移"></a>正式迁移</h2><p>改动在新项目试水了半个月，也是逐渐趋于稳定，终于要开始正式的迁移，真正到正式的这部分，探索工作也是基本完成了，剩下的都是乏味的工作量，包括整合各业务线模块，整合不同的技术栈，抽离模块耦合，检查回归问题等等，这些太过细节就不赘述了。这边主要还有一个工程问题：平台迁移作为内部升级的项目，要和业务开发并行，两者同步进行会产生大量冗余工作，还会增加业务开发难度。</p>
+<p>解决方案首先是以不影响业务开发为前提，这边主要通过两方面进行处理：</p>
+<ol>
+<li>减少迁移持续时间 —— <strong>将迁移分为前/中/后期</strong>，各业务线逐个迁移。真正并行开发的只有中期。前期利用新项目测试迁移方案，包含框架升级基础、模块重写等。中期迁移时允许项目合并有部分重复代码，留给迁移后再处理。整体缩短迁移中期的持续时间，减少冗余工作。</li>
+<li>减少迁移同步的工作量 —— 用<code>git submodul</code>实现各个git项目代码共用，现有开发任务尽量都在submodule下进行，保证业务开发代码和平台迁移代码同步，减少迁移时的同步工作。</li>
+</ol>
+<h2 id="后期收尾"><a href="#后期收尾" class="headerlink" title="后期收尾"></a>后期收尾</h2><p>正式迁移之后，经过一个月的修修补补，项目也是逐渐趋于稳定，之后就是对迁移的遗留产物进行一个收尾，包括去除合并时的冗余代码，移除submodule。整合之后rainbow作为plarform也是更便于开发和管理了，就可以做一些之前很难进行的展望，包括和设计一起推动项目的主题统一，和产品一起讨论功能下线方案等等。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在我实习和正式工作的时间中，和rainbow项目接触了接近两年，对这个已经接近20w代码的项目也是又爱又恨。由于种种原因，整个重构过程都是由我一人完成，痛苦和收获都很多，完成之后也算是了却了之前的一个心结。大部分程序员工作时难免要与遗留项目打交道，希望这篇文章能有那么一点帮助吧。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/blog/tags/React/" rel="tag"># React</a>
+          
+            <a href="/blog/tags/Reengineering/" rel="tag"># Reengineering</a>
+          
+            <a href="/blog/tags/Koa/" rel="tag"># Koa</a>
+          
+            <a href="/blog/tags/nodejs/" rel="tag"># nodejs</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/01/05/git-submodule-guide/" rel="next" title="git submodule 使用指南">
+                <i class="fa fa-chevron-left"></i> git submodule 使用指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/04/16/note-of-re-engineering-legacy-software/" rel="prev" title="《遗留系统：重建实战》读书笔记">
+                《遗留系统：重建实战》读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/avatar.jpeg" alt="Oraaange">
+            
+              <p class="site-author-name" itemprop="name">Oraaange</p>
+              <p class="site-description motion-element" itemprop="description">The End is always near</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/blog/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Orange-C" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:oraaangecolin@gmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重构之前"><span class="nav-number">2.</span> <span class="nav-text">重构之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一切开始之前——基础设施改善"><span class="nav-number">3.</span> <span class="nav-text">一切开始之前——基础设施改善</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地开发环境"><span class="nav-number">3.1.</span> <span class="nav-text">本地开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#项目开发环境"><span class="nav-number">3.1.1.</span> <span class="nav-text">项目开发环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#组件开发环境"><span class="nav-number">3.1.2.</span> <span class="nav-text">组件开发环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内部脚手架"><span class="nav-number">3.1.3.</span> <span class="nav-text">内部脚手架</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建和部署"><span class="nav-number">3.2.</span> <span class="nav-text">构建和部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整合工具"><span class="nav-number">3.3.</span> <span class="nav-text">整合工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级依赖-amp-amp-重写基础模块"><span class="nav-number">4.</span> <span class="nav-text">升级依赖 &amp;&amp; 重写基础模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#web前端"><span class="nav-number">4.1.</span> <span class="nav-text">web前端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#node"><span class="nav-number">4.2.</span> <span class="nav-text">node</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#业务架构探索"><span class="nav-number">5.</span> <span class="nav-text">业务架构探索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务线入口-amp-amp-功能库"><span class="nav-number">5.1.</span> <span class="nav-text">业务线入口 &amp;&amp; 功能库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弱化node层业务逻辑"><span class="nav-number">5.2.</span> <span class="nav-text">弱化node层业务逻辑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正式迁移"><span class="nav-number">6.</span> <span class="nav-text">正式迁移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后期收尾"><span class="nav-number">7.</span> <span class="nav-text">后期收尾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">8.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oraaange</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'Orange-C',
+            repo: 'gitment-store',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ed55f570e8689eff71bbc3d9855f8591ae8946b3',
+            
+                client_id: '2f28b1ae230801880b03'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 10807,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

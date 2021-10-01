@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/blog/css/main.css?v=6.1.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/favicon.ico?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言之前在组内负责核心项目的重构（详见记一次项目的重构），刚好在Phodal在文章里推荐了这本书，虽然当时重构工作已经进行了大半，但个人工作经验毕竟不足，希望能从前辈那里系统地学习一下软件重构之道，当时就在京东下了单（购书链接，想完整阅读的推荐购买）。阅读时发现很多场景和我在重构时遇到的问题类似，解决方案也是比我更加全面和成熟，对于准备着手重构或者正在进行重构的程序员来说，的确是一本好书。 此书主">
+<meta name="keywords" content="Reengineering">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《遗留系统：重建实战》读书笔记">
+<meta property="og:url" content="http://orange-c.github.io/blog/2018/04/16/note-of-re-engineering-legacy-software/index.html">
+<meta property="og:site_name" content="Oraaange&#39;s Blog">
+<meta property="og:description" content="前言之前在组内负责核心项目的重构（详见记一次项目的重构），刚好在Phodal在文章里推荐了这本书，虽然当时重构工作已经进行了大半，但个人工作经验毕竟不足，希望能从前辈那里系统地学习一下软件重构之道，当时就在京东下了单（购书链接，想完整阅读的推荐购买）。阅读时发现很多场景和我在重构时遇到的问题类似，解决方案也是比我更加全面和成熟，对于准备着手重构或者正在进行重构的程序员来说，的确是一本好书。 此书主">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/20180416WechatIMG415.jpeg">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/20180416WechatIMG417.jpeg">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/20180416WechatIMG416.jpeg">
+<meta property="og:updated_time" content="2021-09-14T15:26:24.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《遗留系统：重建实战》读书笔记">
+<meta name="twitter:description" content="前言之前在组内负责核心项目的重构（详见记一次项目的重构），刚好在Phodal在文章里推荐了这本书，虽然当时重构工作已经进行了大半，但个人工作经验毕竟不足，希望能从前辈那里系统地学习一下软件重构之道，当时就在京东下了单（购书链接，想完整阅读的推荐购买）。阅读时发现很多场景和我在重构时遇到的问题类似，解决方案也是比我更加全面和成熟，对于准备着手重构或者正在进行重构的程序员来说，的确是一本好书。 此书主">
+<meta name="twitter:image" content="http://orange-c.github.io/blog/images/20180416WechatIMG415.jpeg">
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Oraaange's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://orange-c.github.io/blog/2018/04/16/note-of-re-engineering-legacy-software/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>《遗留系统：重建实战》读书笔记 | Oraaange's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117282740-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117282740-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Oraaange's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home menu-item-active">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://orange-c.github.io/blog/blog/2018/04/16/note-of-re-engineering-legacy-software/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Oraaange">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/blog/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oraaange's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">《遗留系统：重建实战》读书笔记</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-16T15:56:16-07:00">2018-04-16</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/notes/" itemprop="url" rel="index"><span itemprop="name">notes</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2018/04/16/note-of-re-engineering-legacy-software/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/blog/2018/04/16/note-of-re-engineering-legacy-software/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前在组内负责核心项目的重构（详见<a href="/blog/2018/03/20/project-re-engineering-2017/">记一次项目的重构</a>），刚好在<a href="https://www.zhihu.com/people/phodal" target="_blank" rel="noopener">Phodal</a>在<a href="https://zhuanlan.zhihu.com/p/33262020" target="_blank" rel="noopener">文章</a>里推荐了这本书，虽然当时重构工作已经进行了大半，但个人工作经验毕竟不足，希望能从前辈那里系统地学习一下软件重构之道，当时就在京东下了单（<a href="https://item.jd.com/12185555.html" target="_blank" rel="noopener">购书链接</a>，想完整阅读的推荐购买）。阅读时发现很多场景和我在重构时遇到的问题类似，解决方案也是比我更加全面和成熟，对于准备着手重构或者正在进行重构的程序员来说，的确是一本好书。</p>
+<p>此书主要讲重建遗留系统所需要的工作，不仅有源代码重构的具体方法论，还包含了心理建设，团队交流，基础设施优化等多个方面，通过作者自身经历的重建项目详细地介绍了如何完成一次优秀的重建。虽然书中代码片段主要为Java，但大部分内容还是和软件工程相关，各语言各方向有兴趣的程序员都可以阅读。<a href="https://www.zhihu.com/people/phodal" target="_blank" rel="noopener">Phodal</a>推荐的阅读人群：</p>
+<ul>
+<li>有一定工作经验（2~3 年），并且对代码有追求的程序员。</li>
+<li>面向复杂的遗留/旧系统，无法下手的项目</li>
+<li>熟悉面向对象的程序员</li>
+</ul>
+<p>下面是我阅读过程中的读书笔记（数字代表章节）</p>
+<a id="more"></a>
+<h2 id="遗留项目的挑战（1）"><a href="#遗留项目的挑战（1）" class="headerlink" title="遗留项目的挑战（1）"></a>遗留项目的挑战（1）</h2><h3 id="遗留项目"><a href="#遗留项目" class="headerlink" title="遗留项目"></a>遗留项目</h3><p>老旧、庞大、经历好几代开发、文档不完善。</p>
+<h3 id="遗留代码"><a href="#遗留代码" class="headerlink" title="遗留代码"></a>遗留代码</h3><ol>
+<li>没有测试或者无法测试</li>
+<li>不灵活，多处耦合</li>
+<li>技术债务拖累（多次临时取巧的修复导致代码质量下降）</li>
+</ol>
+<h3 id="遗留基础设施"><a href="#遗留基础设施" class="headerlink" title="遗留基础设施"></a>遗留基础设施</h3><ol>
+<li>开发环境搭建困难</li>
+<li>项目依赖过时</li>
+<li>环境异构（测试/预发/线上环境不同步）</li>
+</ol>
+<h3 id="遗留文化"><a href="#遗留文化" class="headerlink" title="遗留文化"></a>遗留文化</h3><ol>
+<li>害怕变化（为了稳定而保持现状，忽略了改变带来的潜在好处）</li>
+<li>缺乏沟通（知识不共享）</li>
+</ol>
+<h3 id="图表：遗留项目更改、收益及风险"><a href="#图表：遗留项目更改、收益及风险" class="headerlink" title="图表：遗留项目更改、收益及风险"></a>图表：遗留项目更改、收益及风险</h3><p><img src="/blog/images/20180416WechatIMG415.jpeg" alt="0"></p>
+<h2 id="重构的准备（2-3）"><a href="#重构的准备（2-3）" class="headerlink" title="重构的准备（2-3）"></a>重构的准备（2-3）</h2><h3 id="心理建设"><a href="#心理建设" class="headerlink" title="心理建设"></a>心理建设</h3><h4 id="克服恐惧"><a href="#克服恐惧" class="headerlink" title="克服恐惧"></a>克服恐惧</h4><p>部分代码过于脆弱或者非常核心，害怕自己的更改会影响到很多未知的部分，解决方案：</p>
+<ol>
+<li>利用探索性重构，每次做一些尝试性的改动，增加对代码的了解</li>
+<li>利用版本管理系统和IDE等工具保证自己任何破坏性修改都可以恢复</li>
+<li>增加特征测试，保证被重构部分行为的稳定</li>
+</ol>
+<h4 id="克服沮丧"><a href="#克服沮丧" class="headerlink" title="克服沮丧"></a>克服沮丧</h4><p>代码过于庞大复杂，导致失去动力修改，或者孤注一掷进行危险的大型重构，解决方案：</p>
+<ol>
+<li>定期度量代码质量的指标，图形化显示其趋势，从而激励团队</li>
+<li>通过数据决定重构的下一个目标，从而系统地进行重构</li>
+</ol>
+<h3 id="收集软件数据"><a href="#收集软件数据" class="headerlink" title="收集软件数据"></a>收集软件数据</h3><ol>
+<li>bug和编码标准违例</li>
+<li>性能指标</li>
+<li>错误计数</li>
+<li>为工作任务计时（搭建开发环境/发布和部署/修复bug）</li>
+<li>找到经常改动的文件</li>
+</ol>
+<h3 id="达成团队共识"><a href="#达成团队共识" class="headerlink" title="达成团队共识"></a>达成团队共识</h3><p>对于遗留代码，团队内开发人员的态度可以分为传统主义者和反传统主义者，我们希望在两种态度之间达到平衡。</p>
+<h4 id="传统主义者"><a href="#传统主义者" class="headerlink" title="传统主义者"></a>传统主义者</h4><p>为了稳定反对任何形式的变化，认为重构会带来不必要的风险。解决方案：</p>
+<ol>
+<li>结对编程，让他明白重构带来了哪些具体的好处</li>
+<li>解释技术债务，让他明白稳定之下隐藏的问题和风险</li>
+</ol>
+<h4 id="反传统主义者"><a href="#反传统主义者" class="headerlink" title="反传统主义者"></a>反传统主义者</h4><p>厌恶遗留代码，热衷于提高代码质量，经常一次重写大量代码，导致重构风险增大，解决方案：</p>
+<ol>
+<li>代码评审，告诉他将改动控制在合适的大小</li>
+<li>自动化测试，所有改动必须要有测试覆盖，减缓他改动的步伐</li>
+<li>结对编程，引导他们去重构最核心的代码</li>
+<li>划定代码区域，区分出核心与非核心代码，理解重构代码带来的价值和风险</li>
+</ol>
+<h4 id="增加沟通"><a href="#增加沟通" class="headerlink" title="增加沟通"></a>增加沟通</h4><ol>
+<li>代码评审</li>
+<li>结对编程</li>
+<li>团队活动</li>
+</ol>
+<h3 id="获得组织批准"><a href="#获得组织批准" class="headerlink" title="获得组织批准"></a>获得组织批准</h3><ul>
+<li>如果计划比较大，说服领导，展示重构的价值，让整个重构计划变得正式</li>
+<li>如果计划比较小，可以先自己进行一些小改动，在得到实际收益之后，再向团队内推广。</li>
+</ul>
+<h3 id="选择重构目标"><a href="#选择重构目标" class="headerlink" title="选择重构目标"></a>选择重构目标</h3><p>根据难度，风险，价值三个坐标轴放置重构目标，其中包含：</p>
+<ol>
+<li>容易实现的目标（风险=低，难度=低）——可以作为重构的起点</li>
+<li>痛点（价值=高）——重构的核心，需要足够多的时间和精力</li>
+</ol>
+<h3 id="决策：替换、重构还是重写"><a href="#决策：替换、重构还是重写" class="headerlink" title="决策：替换、重构还是重写"></a>决策：替换、重构还是重写</h3><p>开始前，首先应该研究是否有第三方的解决方案，将模块替换为成熟的第三方案可以省掉大量时间和精力。如果没有的话，再决定是需要重构还是重写。重写的利弊如下：</p>
+<ul>
+<li>+ 自由</li>
+<li>+ 可测试性增强</li>
+<li>- 风险更大</li>
+<li>- 可能造成回归问题</li>
+<li>- 开销更大 </li>
+<li>- 性价比可能较低（部分糟糕的代码源于复杂的需求而不是代码问题）</li>
+</ul>
+<p>还可以选择重构和重写的中间路径——增量重写，在低风险的情况下获得相对明显的收益。</p>
+<h2 id="具体方法论（4-6）"><a href="#具体方法论（4-6）" class="headerlink" title="具体方法论（4-6）"></a>具体方法论（4-6）</h2><h3 id="常见遗留代码特征和重构"><a href="#常见遗留代码特征和重构" class="headerlink" title="常见遗留代码特征和重构"></a>常见遗留代码特征和重构</h3><h4 id="陈旧代码"><a href="#陈旧代码" class="headerlink" title="陈旧代码"></a>陈旧代码</h4><ol>
+<li>注释代码</li>
+<li>不会被执行的代码</li>
+<li>过期代码</li>
+</ol>
+<p>解：移除</p>
+<h4 id="有毒的测试"><a href="#有毒的测试" class="headerlink" title="有毒的测试"></a>有毒的测试</h4><ol>
+<li>没有测试任何实际效果</li>
+<li>测试十分脆弱，拖累重构</li>
+<li>测试不稳定，会因为随机因素失败</li>
+</ol>
+<p>解：修复或移除</p>
+<h4 id="错综复杂的业务逻辑"><a href="#错综复杂的业务逻辑" class="headerlink" title="错综复杂的业务逻辑"></a>错综复杂的业务逻辑</h4><ol>
+<li>大量耦合，多处依赖</li>
+<li>简单逻辑复杂化</li>
+</ol>
+<p>解：整理逻辑并合理拆分</p>
+<h4 id="视图层的复杂性"><a href="#视图层的复杂性" class="headerlink" title="视图层的复杂性"></a>视图层的复杂性</h4><ol>
+<li>视图层中夹杂大量业务逻辑</li>
+</ol>
+<p>解：在视图层之前添加一层转换层，用于放业务逻辑</p>
+<h3 id="大规模重写"><a href="#大规模重写" class="headerlink" title="大规模重写"></a>大规模重写</h3><p>当第三方方案和重构都不能得到好的效果时，就需要进行重写，重写形式分为：</p>
+<ol>
+<li>黑盒式重写——功能保持一致</li>
+<li>温习式重写——探索功能更新的机会</li>
+<li>补偿式重写——一部分新功能和重写一起进行</li>
+</ol>
+<h3 id="测试遗留代码"><a href="#测试遗留代码" class="headerlink" title="测试遗留代码"></a>测试遗留代码</h3><ol>
+<li>重构时回归测试比单元测试更重要</li>
+<li>不要过度追求覆盖率</li>
+<li>利用用户帮助测试，方法：<ul>
+<li>渐进式发布新版本</li>
+<li>收集真实数据帮助测试</li>
+<li>灰度发布新版本</li>
+</ul>
+</li>
+</ol>
+<h3 id="重搭架构"><a href="#重搭架构" class="headerlink" title="重搭架构"></a>重搭架构</h3><p>主要看下web应用架构的比较，直接看图吧：</p>
+<p><img src="/blog/images/20180416WechatIMG417.jpeg" alt="1"><br><img src="/blog/images/20180416WechatIMG416.jpeg" alt="2"></p>
+<p>几个小点：</p>
+<ol>
+<li>虽然这几年架构都是逐渐向表中下面这个方向走的，但是还是要具体业务具体对待，每种架构都有利弊，不能哪个架构比较火就用哪个。</li>
+<li>服务越独立，意味着运维工作越多，使用时不能仅考虑开发成本。</li>
+<li>微服务是SOA架构的一个特例，特别强调解耦。意味着服务间只能用API通信，并且要不惜任何代价避免API的破坏性变更。</li>
+</ol>
+<h2 id="改善项目工作流程和基础设施（7-9）"><a href="#改善项目工作流程和基础设施（7-9）" class="headerlink" title="改善项目工作流程和基础设施（7-9）"></a>改善项目工作流程和基础设施（7-9）</h2><ol>
+<li>开发环境自动化搭建</li>
+<li>测试/预发/线上环境自动化搭建，保证环境一致性</li>
+<li>构建和部署流程优化，实现持续集成和自动化</li>
+</ol>
+<h2 id="避免重蹈覆辙（10）"><a href="#避免重蹈覆辙（10）" class="headerlink" title="避免重蹈覆辙（10）"></a>避免重蹈覆辙（10）</h2><p>遗留代码已经焕然一新，现在要做的就是防止你的代码以后变成别人的噩梦</p>
+<ol>
+<li>不要过于关注代码，完善易懂的文档和良好的沟通更重要</li>
+<li>工作是做不完的，鼓励大家共同承担代码质量责任，定期进行代码评审。尝试定期修复代码中的质量问题，确保让其他人看到这份努力从而督促他们</li>
+<li>自动化一切可以自动化的流程（测试/构建/部署）</li>
+<li>保持代码库的轻盈灵活，使其可以低风险地被遗弃和重写</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>重建项目虽然艰苦，但收获远比日常开发要高，祝准备进行或者正在进行重建的程序员都能熬过难关并获得成长～</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/33262020" target="_blank" rel="noopener">荐书《遗留系统：重建实战》：当你面对一坨代码时，你应该这么做</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/Reengineering/" rel="tag"># Reengineering</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/03/20/project-re-engineering-2017/" rel="next" title="记一次项目重构">
+                <i class="fa fa-chevron-left"></i> 记一次项目重构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2021/08/02/next-and-kmp/" rel="prev" title="next数组与KMP算法">
+                next数组与KMP算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/avatar.jpeg" alt="Oraaange">
+            
+              <p class="site-author-name" itemprop="name">Oraaange</p>
+              <p class="site-description motion-element" itemprop="description">The End is always near</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/blog/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Orange-C" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:oraaangecolin@gmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遗留项目的挑战（1）"><span class="nav-number">2.</span> <span class="nav-text">遗留项目的挑战（1）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遗留项目"><span class="nav-number">2.1.</span> <span class="nav-text">遗留项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遗留代码"><span class="nav-number">2.2.</span> <span class="nav-text">遗留代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遗留基础设施"><span class="nav-number">2.3.</span> <span class="nav-text">遗留基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遗留文化"><span class="nav-number">2.4.</span> <span class="nav-text">遗留文化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图表：遗留项目更改、收益及风险"><span class="nav-number">2.5.</span> <span class="nav-text">图表：遗留项目更改、收益及风险</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重构的准备（2-3）"><span class="nav-number">3.</span> <span class="nav-text">重构的准备（2-3）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#心理建设"><span class="nav-number">3.1.</span> <span class="nav-text">心理建设</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#克服恐惧"><span class="nav-number">3.1.1.</span> <span class="nav-text">克服恐惧</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#克服沮丧"><span class="nav-number">3.1.2.</span> <span class="nav-text">克服沮丧</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#收集软件数据"><span class="nav-number">3.2.</span> <span class="nav-text">收集软件数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#达成团队共识"><span class="nav-number">3.3.</span> <span class="nav-text">达成团队共识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#传统主义者"><span class="nav-number">3.3.1.</span> <span class="nav-text">传统主义者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反传统主义者"><span class="nav-number">3.3.2.</span> <span class="nav-text">反传统主义者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#增加沟通"><span class="nav-number">3.3.3.</span> <span class="nav-text">增加沟通</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得组织批准"><span class="nav-number">3.4.</span> <span class="nav-text">获得组织批准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择重构目标"><span class="nav-number">3.5.</span> <span class="nav-text">选择重构目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决策：替换、重构还是重写"><span class="nav-number">3.6.</span> <span class="nav-text">决策：替换、重构还是重写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体方法论（4-6）"><span class="nav-number">4.</span> <span class="nav-text">具体方法论（4-6）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见遗留代码特征和重构"><span class="nav-number">4.1.</span> <span class="nav-text">常见遗留代码特征和重构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#陈旧代码"><span class="nav-number">4.1.1.</span> <span class="nav-text">陈旧代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#有毒的测试"><span class="nav-number">4.1.2.</span> <span class="nav-text">有毒的测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#错综复杂的业务逻辑"><span class="nav-number">4.1.3.</span> <span class="nav-text">错综复杂的业务逻辑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#视图层的复杂性"><span class="nav-number">4.1.4.</span> <span class="nav-text">视图层的复杂性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大规模重写"><span class="nav-number">4.2.</span> <span class="nav-text">大规模重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试遗留代码"><span class="nav-number">4.3.</span> <span class="nav-text">测试遗留代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重搭架构"><span class="nav-number">4.4.</span> <span class="nav-text">重搭架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改善项目工作流程和基础设施（7-9）"><span class="nav-number">5.</span> <span class="nav-text">改善项目工作流程和基础设施（7-9）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免重蹈覆辙（10）"><span class="nav-number">6.</span> <span class="nav-text">避免重蹈覆辙（10）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oraaange</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'Orange-C',
+            repo: 'gitment-store',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ed55f570e8689eff71bbc3d9855f8591ae8946b3',
+            
+                client_id: '2f28b1ae230801880b03'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 10807,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

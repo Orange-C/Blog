@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/blog/css/main.css?v=6.1.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/favicon.ico?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言打算好好复习面试要用到的知识点，也算是对自己学习的一个总结，一直以来我的学习都是缺乏笔记的（喂你怎么考上大学的？。这次正好培养一下这个习惯。这些笔记可能在我之后看到有错误或者新东西之后继续更新更正，也算是完善一下自己的知识树吧。 浏览器常见的浏览器内核有哪些？ Trident（IE,360搜狗的兼容模式） Gecko（Firefox） Webkit（Chrome,Safari,android">
+<meta name="keywords" content="interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端面试复习-1-浏览器和计算机网络等">
+<meta property="og:url" content="http://orange-c.github.io/blog/2016/03/25/fe-interview-1/index.html">
+<meta property="og:site_name" content="Oraaange&#39;s Blog">
+<meta property="og:description" content="前言打算好好复习面试要用到的知识点，也算是对自己学习的一个总结，一直以来我的学习都是缺乏笔记的（喂你怎么考上大学的？。这次正好培养一下这个习惯。这些笔记可能在我之后看到有错误或者新东西之后继续更新更正，也算是完善一下自己的知识树吧。 浏览器常见的浏览器内核有哪些？ Trident（IE,360搜狗的兼容模式） Gecko（Firefox） Webkit（Chrome,Safari,android">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-09-14T15:26:24.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端面试复习-1-浏览器和计算机网络等">
+<meta name="twitter:description" content="前言打算好好复习面试要用到的知识点，也算是对自己学习的一个总结，一直以来我的学习都是缺乏笔记的（喂你怎么考上大学的？。这次正好培养一下这个习惯。这些笔记可能在我之后看到有错误或者新东西之后继续更新更正，也算是完善一下自己的知识树吧。 浏览器常见的浏览器内核有哪些？ Trident（IE,360搜狗的兼容模式） Gecko（Firefox） Webkit（Chrome,Safari,android">
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Oraaange's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://orange-c.github.io/blog/2016/03/25/fe-interview-1/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>前端面试复习-1-浏览器和计算机网络等 | Oraaange's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117282740-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117282740-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Oraaange's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home menu-item-active">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://orange-c.github.io/blog/blog/2016/03/25/fe-interview-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Oraaange">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/blog/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oraaange's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">前端面试复习-1-浏览器和计算机网络等</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-25T21:11:44-07:00">2016-03-25</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/interview/" itemprop="url" rel="index"><span itemprop="name">interview</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2016/03/25/fe-interview-1/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/blog/2016/03/25/fe-interview-1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>打算好好复习面试要用到的知识点，也算是对自己学习的一个总结，一直以来我的学习都是缺乏笔记的<del>（喂你怎么考上大学的？</del>。这次正好培养一下这个习惯。这些笔记可能在我之后看到有错误或者新东西之后继续更新更正，也算是完善一下自己的知识树吧。</p>
+<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><h3 id="常见的浏览器内核有哪些？"><a href="#常见的浏览器内核有哪些？" class="headerlink" title="常见的浏览器内核有哪些？"></a>常见的浏览器内核有哪些？</h3><ul>
+<li>Trident（IE,360搜狗的兼容模式）</li>
+<li>Gecko（Firefox）</li>
+<li>Webkit（Chrome,Safari,android Chrome,android,ios,360搜狗的极速模式）</li>
+</ul>
+<a id="more"></a>
+<h3 id="W3C和WHATWG分别是什么？"><a href="#W3C和WHATWG分别是什么？" class="headerlink" title="W3C和WHATWG分别是什么？"></a>W3C和WHATWG分别是什么？</h3><p>简而言之就是两个制定标准的组织，W3C党指微软，苹果等。 WHATWG党指谷歌，火狐等。浏览器终究还是商业斗争，web标准也是因为两党的斗争一直难以确定。他们在HTML5争得最多的还是最具争议的视频格式标准，音频格式标准（这两个的格式真的很奇怪……），图片格式标准和一些类似WebRTC，WebGL等谷歌提出的标准。</p>
+<h3 id="ECMAScript和JavaScript的区别？"><a href="#ECMAScript和JavaScript的区别？" class="headerlink" title="ECMAScript和JavaScript的区别？"></a>ECMAScript和JavaScript的区别？</h3><p>ECMA是欧洲计算机制造商协会（European Computer Manufacturers Association），其中与JavaScript有关的文件叫做ECMA-262。ECMA-262定义了语言的基础，web浏览器只是ECMA的宿主环境之一，JavaScript只是ECMAScript的一种实现。</p>
+<h3 id="浏览器为什么给css加前缀？"><a href="#浏览器为什么给css加前缀？" class="headerlink" title="浏览器为什么给css加前缀？"></a>浏览器为什么给css加前缀？</h3><p>在标准还未确定时，部分浏览器根据最初的草案实现了部分功能，为了与之后确定下来的标准兼容，每种浏览器使用了自己的私有前缀与标准进行区分。所以带有私有前缀的属性在浏览器之间的实现可能有一点点不同。</p>
+<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h3 id="HTTP状态码有哪些？"><a href="#HTTP状态码有哪些？" class="headerlink" title="HTTP状态码有哪些？"></a>HTTP状态码有哪些？</h3><ul>
+<li>1** (信息类) 表示接收到请求并继续处理<ul>
+<li>100 (Continue/继续) 表示请求成功，允许继续发送附加信息，例如post请求。</li>
+</ul>
+</li>
+<li>2** (响应成功) 表示请求成功<ul>
+<li>200 (OK/正常) 一切正常</li>
+<li>201 (Created/已创建) 请求成功并且服务器创建了新资源，应在头信息中给出其URL</li>
+<li>202 (Accepted/接受) 服务器已接受请求但是没有处理完</li>
+<li>205 (Reset Content/重置内容) 没有新资源但是浏览器要重置文档显示，用于强制浏览器清除表单域</li>
+<li>206 (Partial Content/局部内容) 在服务器完成了一个包含Range头信息的局部请求时被发送，可以用于<strong>断点续传</strong></li>
+</ul>
+</li>
+<li>3** (重定向类) 用于已经移动的文件并且常被包含在定位头信息中指定新的地址信息<ul>
+<li>301 (Moved Permanently/永久重定向) 请求的文档在别的地方，新URL会在响应头信息中给出，浏览器自动连接到新URL</li>
+<li>302 (Moved Temporarily/临时性重定向) 与301类似，但是头信息中的URL只是临时性的交换地址。</li>
+<li>303 (See Other/参见其他信息) 与301，302类似，要求总是用GET请求新的URL</li>
+<li>304 (Not Modified/未修正) 自上次请求后，资源未被修改，通过客户端If-Modified-Since头信息来判断。</li>
+</ul>
+</li>
+<li>4** (客户端错误类) 表示客户端的错误<ul>
+<li>400 (Bad Request/错误请求) 客户端请求语法错误</li>
+<li>401 (Unauthorized/未授权) 在授权头信息中没有有效的身份信息，请求未授权。</li>
+<li>403 (Forbidden/禁止) 有授权但是服务器拒绝提供资源（权限不同？）</li>
+<li>404 (Not Found/未找到) 找不到与URI相匹配的资源</li>
+</ul>
+</li>
+<li>5** (服务器错误类) 表示服务器的错误<ul>
+<li>500 (Internal Server Error/内部服务器错误) 最常见的服务器端错误</li>
+<li>503 (Service Unavailable/服务无法获得) 可能是因为服务器维护或者超载而无法响应</li>
+</ul>
+</li>
+</ul>
+<h3 id="HTTP中与缓存相关的头信息"><a href="#HTTP中与缓存相关的头信息" class="headerlink" title="HTTP中与缓存相关的头信息"></a>HTTP中与缓存相关的头信息</h3><ul>
+<li>Expires GMT时间，告知浏览器在这个时间前信任缓存中的副本，缺点是客户端时间可能不准</li>
+<li>Cache-Control 属于http1.1 内容可能有以下几种<ol>
+<li>public 响应头，通知浏览器无条件缓存该响应</li>
+<li>private 响应头，通知浏览器只针对通知浏览器只针对单个用户缓存响应. 且可以具体指定某个字段.如private–”username”</li>
+<li>no-cache 请求头，浏览器去服务器取数据并验证缓存。响应头，告诉浏览器必须要回服务器校验，不管有没有缓存。如果确定没有被改，可以使用缓存中的数据。</li>
+<li>no-store 要求浏览器任何情况下都不要缓存</li>
+<li>max-age 强制浏览器根据该值校验缓存。即与自身的Age值，与请求时间做比较，如果超出max-age值，则强制去服务器端验证。以确保返回一个新鲜的响应。其功能与传统的Expires类似，但区别在于Expires是根据某个特定日期值做比较，一但客户端自身的时间不准确.则结果可能就是错误的，而max-age则都是客户端时间比较。max-age的优先级高于Expires。</li>
+</ol>
+</li>
+<li>Last-Modified GMT时间，告诉客户端这个资源的最后修改时间。与其相对应的有If-Modified-Since，客户端在请求时带上这个表示客户端中资源的最后修改时间，然后服务端将两个时间验证，决定是否返回304。</li>
+</ul>
+<h3 id="GET和POST扫盲？"><a href="#GET和POST扫盲？" class="headerlink" title="GET和POST扫盲？"></a>GET和POST扫盲？</h3><ol>
+<li>GET和POST与数据如何传递没有关系。HTTP协议中，Method和data是正交的两个概念，使用哪个Method与应用层数据如何传递没有关系。我们常见的说法是HTML标准对HTTP协议用法的约定（即GET用URL或Cookie传参，POST用BODY传参）。</li>
+<li>HTTP协议中对Http头和BODY都没有长度要求。URL的长度限制有两方面原因<ul>
+<li>浏览器限制</li>
+<li>服务器限制，为了安全和稳定，防止服务器负担太大，是针对所有HTTP请求的限制，与Method没关系</li>
+</ul>
+</li>
+<li>GET和POST都不安全，要安全就用Https。</li>
+<li>HTTP协议中GET是安全和幂等的。POST不安全也不幂等。（幂等：一次或多次操作具有相同的作用）安全和幂等的意义在于当操作没有达到预期的目标时，我们可以不停的重试，而不会对资源产生副作用。同理PUT，DELETE也是安全和幂等的。</li>
+</ol>
+<h3 id="Https是什么？"><a href="#Https是什么？" class="headerlink" title="Https是什么？"></a>Https是什么？</h3><p>以安全为目的的http通道，在http下加入TLS（历史原因，SSL3.0之后被TLS替代）。</p>
+<ul>
+<li>HTTPS协议需要申请证书，大部分要收费。</li>
+<li>http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议。</li>
+<li>http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。</li>
+<li>http的连接简单，是无状态的。HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。</li>
+</ul>
+<h3 id="从输入URL到页面加载显示完成，发生了什么？"><a href="#从输入URL到页面加载显示完成，发生了什么？" class="headerlink" title="从输入URL到页面加载显示完成，发生了什么？"></a>从输入URL到页面加载显示完成，发生了什么？</h3><ol>
+<li>浏览器开启一个线程来处理这个请求，对URL分析如果是http协议就按照web方式来处理</li>
+<li>通过DNS解析获取IP地址，设置UA等信息发出第二个GET请求</li>
+<li>进行HTTP协议对话，客户端发送请求报头</li>
+<li>进入到服务器上的Web Server，如Apache、Tomcat、Node.JS等服务器</li>
+<li>进入部署好的后台应用，找到对应的请求处理</li>
+<li>处理结束返回报头和资源，如果是访问过的资源，比较服务器最后修改时间，选择是否返回304</li>
+<li>如果html没有缓存，浏览器就开始下载html文档，同时使用缓存资源</li>
+<li>html一边下载一边解析，根据标签建立DOM</li>
+<li>根据url下载所需css，js，图片资源，css是异步下载，同步施行，会阻塞式地建立CSSOM，和DOM一起渲染成完整的render树</li>
+<li>js是异步下载同步执行，在js后面的html内容呈现会被阻塞</li>
+<li>当js运行完成，页面加载完成</li>
+</ol>
+<p>TIPS：</p>
+<ul>
+<li>如果把CSS放在底部，页面会出现无样式布局直到CSS加载完成出现闪屏的现象（CSS加载完成后再次渲染）</li>
+<li>当浏览器遇到（内嵌）script标签时，当前浏览器无从获知javaScript是否会修改页面内容。因此，这时浏览器会停止处理页面，先执行javaScript代码，然后再继续解析和渲染页面。同样的情况也发生在使用 src 属性加在javaScript的过程中（即外链 javaScript），浏览器必须先花时间下载外链文件中的代码，然后解析并执行它。在这个过程中，页面渲染和用户交互完全被阻塞了。也就是说：每当浏览器解析到script标签（无论内嵌还是外链）时，浏览器会（一根筋地）优先下载、解析并执行该标签中的javaScript代码，而阻塞了其后所有页面内容的下载和渲染。从 IE 8、Firefox 3.5、Safari 4 和 Chrome 2 开始都允许并行下载 JavaScript 文件 script标签在下载外部资源时不会阻塞其他script标签。遗憾的是，JavaScript 下载过程仍然会阻塞其他资源的下载，比如样式文件和图片(之前的版本会阻塞所有资源的下载),还是会锁死浏览器的一段时间（无法交互）</li>
+</ul>
+<h2 id="前端性能优化方法"><a href="#前端性能优化方法" class="headerlink" title="前端性能优化方法"></a>前端性能优化方法</h2><ul>
+<li>请求数量：合并压缩JS和CSS，CSS sprite，拆分初始化负载（按需加载？），划分主域，</li>
+<li>请求大小：合并压缩JS和CSS，CSS sprite，开启gzip，精简JS，图像优化</li>
+<li>缓存利用：使用CDN，使用外部JavaScript和CSS，减少DNS查找</li>
+<li>页面结构：将样式表放在顶部，将脚本放在底部</li>
+</ul>
+<p>关于划分主域，浏览器执行“每个服务端最大连接数”的限制是根据URL上的主机名，而不是解析出来的IP地址。为了新域建立一条CNAME记录，CNAME仅仅是域名的一个别名。即使域名都指向同一个服务器，浏览器依旧会为每个主机名开放最大连接数。域的数量最好是两个，过多可能会导致服务器端压力过大。</p>
+<h2 id="浏览器客户端安全"><a href="#浏览器客户端安全" class="headerlink" title="浏览器客户端安全"></a>浏览器客户端安全</h2><h3 id="XSS原理"><a href="#XSS原理" class="headerlink" title="XSS原理"></a>XSS原理</h3><p>XSS，跨站脚本攻击。在页面中插入恶意脚本，在用户浏览时触发。</p>
+<h3 id="XSS防范"><a href="#XSS防范" class="headerlink" title="XSS防范"></a>XSS防范</h3><p>XSS攻击方法多样，很难彻底防范，最方便的就是检测用户输入。</p>
+<h3 id="CSRF原理"><a href="#CSRF原理" class="headerlink" title="CSRF原理"></a>CSRF原理</h3><p>CSRF，跨站点请求伪造。未经授权的系统会伪造自己（可能通过使用者的Cookie等信息）让服务器认为它合法。</p>
+<h3 id="CSRF防范"><a href="#CSRF防范" class="headerlink" title="CSRF防范"></a>CSRF防范</h3><ul>
+<li>验证码</li>
+<li>请求加上计算获得的TOKEN</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/interview/" rel="tag"># interview</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2016/03/22/html5-CORS/" rel="next" title="谈谈CORS跨域">
+                <i class="fa fa-chevron-left"></i> 谈谈CORS跨域
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2016/03/27/fe-interview-2/" rel="prev" title="前端面试复习-2-HTML&CSS">
+                前端面试复习-2-HTML&CSS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/avatar.jpeg" alt="Oraaange">
+            
+              <p class="site-author-name" itemprop="name">Oraaange</p>
+              <p class="site-description motion-element" itemprop="description">The End is always near</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/blog/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Orange-C" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:oraaangecolin@gmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器"><span class="nav-number">2.</span> <span class="nav-text">浏览器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的浏览器内核有哪些？"><span class="nav-number">2.1.</span> <span class="nav-text">常见的浏览器内核有哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#W3C和WHATWG分别是什么？"><span class="nav-number">2.2.</span> <span class="nav-text">W3C和WHATWG分别是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECMAScript和JavaScript的区别？"><span class="nav-number">2.3.</span> <span class="nav-text">ECMAScript和JavaScript的区别？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器为什么给css加前缀？"><span class="nav-number">2.4.</span> <span class="nav-text">浏览器为什么给css加前缀？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算机网络"><span class="nav-number">3.</span> <span class="nav-text">计算机网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP状态码有哪些？"><span class="nav-number">3.1.</span> <span class="nav-text">HTTP状态码有哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP中与缓存相关的头信息"><span class="nav-number">3.2.</span> <span class="nav-text">HTTP中与缓存相关的头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GET和POST扫盲？"><span class="nav-number">3.3.</span> <span class="nav-text">GET和POST扫盲？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Https是什么？"><span class="nav-number">3.4.</span> <span class="nav-text">Https是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从输入URL到页面加载显示完成，发生了什么？"><span class="nav-number">3.5.</span> <span class="nav-text">从输入URL到页面加载显示完成，发生了什么？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前端性能优化方法"><span class="nav-number">4.</span> <span class="nav-text">前端性能优化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器客户端安全"><span class="nav-number">5.</span> <span class="nav-text">浏览器客户端安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS原理"><span class="nav-number">5.1.</span> <span class="nav-text">XSS原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS防范"><span class="nav-number">5.2.</span> <span class="nav-text">XSS防范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF原理"><span class="nav-number">5.3.</span> <span class="nav-text">CSRF原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF防范"><span class="nav-number">5.4.</span> <span class="nav-text">CSRF防范</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oraaange</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'Orange-C',
+            repo: 'gitment-store',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ed55f570e8689eff71bbc3d9855f8591ae8946b3',
+            
+                client_id: '2f28b1ae230801880b03'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 10807,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/blog/css/main.css?v=6.1.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/favicon.ico?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言如今在多人协作开发的团队中，免不了要用到版本控制系统（Version control system），常见的有SVN和Git。但是当公司和团队增长到一定程度时，就需要考虑一些涉及到稳定性的问题。比如  如何严格控制线上代码的合并权限 如何管理多个并行开发的feature的测试 线上产生问题时如何快速回滚 如何减少开发人员合并代码的人工疏漏  这篇文章会介绍一种基于git分支的开发部署流程，大部">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一种基于git分支的开发和部署流程">
+<meta property="og:url" content="http://orange-c.github.io/blog/2017/03/20/deploy-with-git/index.html">
+<meta property="og:site_name" content="Oraaange&#39;s Blog">
+<meta property="og:description" content="前言如今在多人协作开发的团队中，免不了要用到版本控制系统（Version control system），常见的有SVN和Git。但是当公司和团队增长到一定程度时，就需要考虑一些涉及到稳定性的问题。比如  如何严格控制线上代码的合并权限 如何管理多个并行开发的feature的测试 线上产生问题时如何快速回滚 如何减少开发人员合并代码的人工疏漏  这篇文章会介绍一种基于git分支的开发部署流程，大部">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-09-14T15:26:24.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一种基于git分支的开发和部署流程">
+<meta name="twitter:description" content="前言如今在多人协作开发的团队中，免不了要用到版本控制系统（Version control system），常见的有SVN和Git。但是当公司和团队增长到一定程度时，就需要考虑一些涉及到稳定性的问题。比如  如何严格控制线上代码的合并权限 如何管理多个并行开发的feature的测试 线上产生问题时如何快速回滚 如何减少开发人员合并代码的人工疏漏  这篇文章会介绍一种基于git分支的开发部署流程，大部">
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Oraaange's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://orange-c.github.io/blog/2017/03/20/deploy-with-git/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>一种基于git分支的开发和部署流程 | Oraaange's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117282740-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117282740-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Oraaange's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home menu-item-active">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://orange-c.github.io/blog/blog/2017/03/20/deploy-with-git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Oraaange">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/blog/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oraaange's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">一种基于git分支的开发和部署流程</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-20T15:05:20-07:00">2017-03-20</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2017/03/20/deploy-with-git/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/blog/2017/03/20/deploy-with-git/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>如今在多人协作开发的团队中，免不了要用到版本控制系统（Version control system），常见的有<code>SVN</code>和<code>Git</code>。但是当公司和团队增长到一定程度时，就需要考虑一些涉及到稳定性的问题。比如</p>
+<ol>
+<li>如何严格控制线上代码的合并权限</li>
+<li>如何管理多个并行开发的feature的测试</li>
+<li>线上产生问题时如何快速回滚</li>
+<li>如何减少开发人员合并代码的人工疏漏</li>
+</ol>
+<p>这篇文章会介绍一种基于<code>git</code>分支的开发部署流程，大部分思路来自于实习部门的实践，我对其做了一些抽象和补充。相信大公司内部肯定有自己成熟的开发和部署流程，这边只是简单介绍思路，推荐开发还比较原始的小公司或者小团队使用，可以更好地管理项目迭代。</p>
+<a id="more"></a>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><p>项目中将主要分为三种分支</p>
+<ol>
+<li>master —— 线上稳定代码</li>
+<li>dev/x.x.x —— 部署专用feature分支，一个版本号代表一个feature，使用<a href="http://semver.org/lang/zh-CN/" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a> 语义化版本规范。</li>
+<li>* —— 个人开发分支，随意命名</li>
+</ol>
+<p>两个角色可以对分支进行操作，部署系统和开发者。下面介绍各个分支的具体作用与特点</p>
+<h3 id="master"><a href="#master" class="headerlink" title="master"></a>master</h3><p>master分支代表已经运行在线上的稳定代码，<strong>只有部署系统才有权限修改master分支</strong>。其他分支必须在本地合并master的最新修改之后才能发布或者push到远程，保证远程的分支的代码始终领先于master分支。</p>
+<h3 id="dev"><a href="#dev" class="headerlink" title="dev"></a>dev</h3><p>dev分支命名格式固定为dev/x.x.x（前缀随意，但各dev分支一定要相同），方便脚本识别。版本号根据当前feature决定，应始终大于master的版本号。</p>
+<p>在部署系统中可以选择某个版本号的dev分支，将其发布至任意机器（日常/预发/线上）。发布线上时系统会自动将代码合进master分支（因为开发时本地已经合并过master所以不会有代码冲突），线上发布之后会将对应的dev分支删除。</p>
+<h3 id="个人分支"><a href="#个人分支" class="headerlink" title="个人分支"></a>个人分支</h3><p>分支名随意，所有开发的操作都应该在这个分支下完成（因为dev分支会被删除，master分支没有权限，只有这个是可控的分支吗）</p>
+<h2 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h2><ol>
+<li>在个人分支上进行开发，保证领先于master分支并处理相关冲突</li>
+<li>push时由另一名同事进行code review之后才能提交成功</li>
+<li>往dev分支merge代码，通过部署系统发布测试环境</li>
+<li>需要修改代码时，重新走一遍步骤1-3</li>
+<li>最后上线时，在部署系统选择对应版本号的dev分支</li>
+</ol>
+<h2 id="部署流程"><a href="#部署流程" class="headerlink" title="部署流程"></a>部署流程</h2><ol>
+<li>部署系统读取dev分支，检查版本号以及commit是否领先于master</li>
+<li>部署系统将原有master分支用tag存下来，命名为相应版本号（用于快速回滚）</li>
+<li>部署系统在master分支进行merge dev分支操作</li>
+<li>部署系统删除dev分支</li>
+</ol>
+<h2 id="回顾问题"><a href="#回顾问题" class="headerlink" title="回顾问题"></a>回顾问题</h2><p>我们再来看这个系统是如何解决之前提到的问题：</p>
+<ol>
+<li>如何严格控制线上代码的合并权限 —— 只有部署系统才有权限修改master分支，减少了开发的误操作。</li>
+<li>如何管理多个并行开发的feature的测试 —— 多个并行开发的feature现在用不同的版本号代表，各自有独立的dev分支，不同的测试机器可以选择不同的分支部署进行测试。</li>
+<li>线上产生问题时如何快速回滚 —— 部署线上时始终会产生一个以版本号为名称的tag版本的代码(<a href="https://git-scm.com/docs/git-tag" target="_blank" rel="noopener">什么是tag</a>)，这样部署系统可以快速找到上个稳定版本的代码进行回滚操作。</li>
+<li>如何减少开发人员合并代码的人工疏漏 —— 强制远程代码必须领先于master，这样开发在日常迭代时必须多次合并master的改动，每次合并小量代码，更方便解决冲突，防止在部署前一次性合并大量代码导致人工疏漏。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在团队逐渐扩张，项目越来越大的过程中，流程的重要性就渐渐超过了开发者素质的重要性，大型项目迭代中要切记不能过于依赖开发者自身水平，因为这是一个不可控因素。很多问题都能通过完善流程去解决，这边也只是介绍其中一个流程，其他还包括评审，测试等各种流程，未来或许在这几个方面也会做一些研究。</p>
+<h2 id="附录：git-hook-pre-push"><a href="#附录：git-hook-pre-push" class="headerlink" title="附录：git hook pre-push"></a>附录：<code>git hook pre-push</code></h2><p>因为公司内部部署系统的种种限制，上面的想法我只在我们团队实现了很小一部分。其中如何在提交时强制要求领先于master就是用<code>git hook</code>的<code>pre-push</code>实现的。</p>
+<p><a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks" target="_blank" rel="noopener"><code>git hook</code></a>是git提供的工具，可以在某些操作的前后触发特定脚本，顾名思义<code>pre-push</code>就是在push前触发的脚本。一般来说脚本应该放在git服务器上，方便统一管理，但是我并没有公司git服务器的权限，所以只能放在项目本地，但在本地还有一个问题就是<code>git hook</code>脚本是放在<code>.git</code>文件夹下的，无法随着项目一起提交维护。所以这里用到了一个npm包<a href="https://www.npmjs.com/package/husky" target="_blank" rel="noopener">husky</a>来帮助我管理<code>git hook</code>脚本，pre-push检查脚本如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">while read local_ref local_sha remote_ref remote_sha</span><br><span class="line">do</span><br><span class="line">    commit=`git rev-list -n 1 origin/master ^$local_ref`</span><br><span class="line">    echo $commit</span><br><span class="line">    if [ -n &quot;$commit&quot; ]</span><br><span class="line">    then</span><br><span class="line">        echo &gt;&amp;2 -e &quot;Local branch $local_ref is behind origin/master&quot;</span><br><span class="line">        echo &gt;&amp;2 -e &quot;Please run &apos; git merge origin/master &apos; first&quot;</span><br><span class="line"></span><br><span class="line">        exit 1</span><br><span class="line">    fi</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2016/10/02/react-component-design/" rel="next" title="谈谈react组件设计">
+                <i class="fa fa-chevron-left"></i> 谈谈react组件设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2018/01/05/git-submodule-guide/" rel="prev" title="git submodule 使用指南">
+                git submodule 使用指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/avatar.jpeg" alt="Oraaange">
+            
+              <p class="site-author-name" itemprop="name">Oraaange</p>
+              <p class="site-description motion-element" itemprop="description">The End is always near</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/blog/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Orange-C" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:oraaangecolin@gmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支管理"><span class="nav-number">2.</span> <span class="nav-text">分支管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#master"><span class="nav-number">2.1.</span> <span class="nav-text">master</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dev"><span class="nav-number">2.2.</span> <span class="nav-text">dev</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人分支"><span class="nav-number">2.3.</span> <span class="nav-text">个人分支</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发流程"><span class="nav-number">3.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署流程"><span class="nav-number">4.</span> <span class="nav-text">部署流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回顾问题"><span class="nav-number">5.</span> <span class="nav-text">回顾问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录：git-hook-pre-push"><span class="nav-number">7.</span> <span class="nav-text">附录：git hook pre-push</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oraaange</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'Orange-C',
+            repo: 'gitment-store',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ed55f570e8689eff71bbc3d9855f8591ae8946b3',
+            
+                client_id: '2f28b1ae230801880b03'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 10807,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/blog/css/main.css?v=6.1.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon.ico?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/favicon.ico?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言之前我负责给项目搭建单元测试环境，对当前的web前端单元测试方案调查了一番，顺便看了一点E2E测试的方案。当时在团队内做了一次技术分享并且与java后端开发人员交流了一下关于测试的看法。我打算在这篇文章总结一下这次工作的收获。 关于测试的基础知识解释一些关于测试的基础概念 什么是测试wiki上这么描述：  软件测试的经典定义是：在规定的条件下对程序进行操作，以发现程序错误，衡量软件质量，并对其">
+<meta name="keywords" content="JavaScript,test">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js单元测试调研">
+<meta property="og:url" content="http://orange-c.github.io/blog/2016/06/10/javascript-unit-test/index.html">
+<meta property="og:site_name" content="Oraaange&#39;s Blog">
+<meta property="og:description" content="前言之前我负责给项目搭建单元测试环境，对当前的web前端单元测试方案调查了一番，顺便看了一点E2E测试的方案。当时在团队内做了一次技术分享并且与java后端开发人员交流了一下关于测试的看法。我打算在这篇文章总结一下这次工作的收获。 关于测试的基础知识解释一些关于测试的基础概念 什么是测试wiki上这么描述：  软件测试的经典定义是：在规定的条件下对程序进行操作，以发现程序错误，衡量软件质量，并对其">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/mochawesome.png">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/test.png">
+<meta property="og:image" content="http://orange-c.github.io/blog/images/testchange.png">
+<meta property="og:updated_time" content="2021-09-14T15:26:24.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js单元测试调研">
+<meta name="twitter:description" content="前言之前我负责给项目搭建单元测试环境，对当前的web前端单元测试方案调查了一番，顺便看了一点E2E测试的方案。当时在团队内做了一次技术分享并且与java后端开发人员交流了一下关于测试的看法。我打算在这篇文章总结一下这次工作的收获。 关于测试的基础知识解释一些关于测试的基础概念 什么是测试wiki上这么描述：  软件测试的经典定义是：在规定的条件下对程序进行操作，以发现程序错误，衡量软件质量，并对其">
+<meta name="twitter:image" content="http://orange-c.github.io/blog/images/mochawesome.png">
+
+
+
+  <link rel="alternate" href="/blog/atom.xml" title="Oraaange's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://orange-c.github.io/blog/2016/06/10/javascript-unit-test/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>js单元测试调研 | Oraaange's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117282740-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117282740-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Oraaange's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home menu-item-active">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://orange-c.github.io/blog/blog/2016/06/10/javascript-unit-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Oraaange">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/blog/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oraaange's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">js单元测试调研</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-10T13:30:36-07:00">2016-06-10</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/blog/2016/06/10/javascript-unit-test/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/blog/2016/06/10/javascript-unit-test/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前我负责给项目搭建单元测试环境，对当前的web前端单元测试方案调查了一番，顺便看了一点E2E测试的方案。当时在团队内做了一次技术分享并且与java后端开发人员交流了一下关于测试的看法。我打算在这篇文章总结一下这次工作的收获。</p>
+<h2 id="关于测试的基础知识"><a href="#关于测试的基础知识" class="headerlink" title="关于测试的基础知识"></a>关于测试的基础知识</h2><p>解释一些关于测试的基础概念</p>
+<h3 id="什么是测试"><a href="#什么是测试" class="headerlink" title="什么是测试"></a>什么是测试</h3><p><a href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95" target="_blank" rel="noopener">wiki</a>上这么描述：</p>
+<blockquote>
+<p>软件测试的经典定义是：在规定的条件下对程序进行操作，以发现程序错误，衡量软件质量，并对其是否能满足设计要求进行评估的过程。</p>
+</blockquote>
+<p>通俗地说，测试就是看软件是否达到要求，然而这要求有许多种，有的来自程序本身复杂度，有的来自客户需求，所以也诞生了许多测试方法，包括黑盒白盒，单元测试，集成测试等等。在复杂的软件产品中，测试是保证软件质量重要的一环。</p>
+<a id="more"></a>
+<h3 id="关于自动化测试"><a href="#关于自动化测试" class="headerlink" title="关于自动化测试"></a>关于自动化测试</h3><p>关于测试，以前大部分都是程序员手动去模仿用户使用，来看软件是否符合预期，这样最原始最符合真实环境，但是也有很多缺点：</p>
+<ul>
+<li>程序内部的测试很麻烦，因为人工测试大部分属于E2E，只能看到用户层的效果，很难看出程序内部的问题</li>
+<li>无法保持测试的一致性，在多次测试中人往往不经意漏掉一部分测试</li>
+</ul>
+<p>自动化测试，顾名思义就通过一个测试程序在软件更新之后自动运行测试。现在的测试基本都是自动化测试，测试成本也基本就是维护测试程序，但测试程序的复杂度因为用户需求不同会有很大的差别。<br>web前端在最初复杂度不高的时候因为大部分依赖后端，所以人工测试和后端测试基本就能满足需求。近几年web应用复杂度大大增加，前端测试也被重视了起来，出现了很多用于测试的工具。</p>
+<h3 id="关于TDD-amp-BDD"><a href="#关于TDD-amp-BDD" class="headerlink" title="关于TDD&amp;BDD"></a>关于TDD&amp;BDD</h3><p>说到测试往往伴随着这两个词，分别介绍一下：</p>
+<ul>
+<li>TDD，测试驱动开发（Test-driven development），倡导先写测试程序，然后编码实现其功能。测试驱动开发是戴两顶帽子思考的开发方式：先戴上实现功能的帽子，在测试的辅助下，快速实现其功能；再戴上重构的帽子，在测试的保护下，通过去除冗余的代码，提高代码质量。测试驱动着整个开发过程：首先，驱动代码的设计和功能的实现；其次，驱动代码的再设计和重构。</li>
+<li>BDD，行为驱动开发（Behavior-driven development），诞生于敏捷软件开发，它鼓励软件项目中的开发者、QA和非技术人员或商业参与者之间的协作。通过用自然语言书写非程序员可读的测试用例扩展了测试驱动开发方法。这让开发者得以把精力集中在代码应该怎么写，而不是技术细节上，而且也最大程度的减少了将代码编写者的技术语言与商业客户、用户、利益相关者、项目管理者等的领域语言之间来回翻译的代价。</li>
+</ul>
+<p>换个比较有趣的方式看一下TDD和BDD</p>
+<ul>
+<li><strong>TDD</strong></li>
+<li>一个测试工程师走进一家酒吧，要了一杯啤酒</li>
+<li>一个测试工程师走进一家酒吧，要了一杯咖啡</li>
+<li>一个测试工程师走进一家酒吧，要了0.7杯啤酒</li>
+<li>一个测试工程师走进一家酒吧，要了-1杯啤酒</li>
+<li>一个测试工程师走进一家酒吧，要了2^32杯啤酒</li>
+<li>一个测试工程师走进一家酒吧，要了一杯洗脚水</li>
+<li>一个测试工程师走进一家酒吧，要了一杯蜥蜴</li>
+<li>一个测试工程师走进一家酒吧，要了一份asdfQwer@24dg!&amp;*(@</li>
+<li>一个测试工程师走进一家酒吧，什么也没要</li>
+<li>一个测试工程师走进一家酒吧，又走出去又从窗户进来又从后门出去从下水道钻进来</li>
+<li>一个测试工程师走进一家酒吧，又走出去又进来又出去又进来又出去，最后在外面把老板打了一顿</li>
+<li>一个测试工程师走进一</li>
+<li>一个测试工程师走进一家酒吧，要了一杯烫烫烫的锟斤拷</li>
+<li>一个测试工程师走进一家酒吧，要了NaN杯Null</li>
+<li>1T测试工程师冲进一家酒吧，要了500T啤酒咖啡洗脚水野猫狼牙棒奶茶</li>
+<li>1T测试工程师把酒吧拆了</li>
+<li>一个测试工程师化装成老板走进一家酒吧，要了500杯啤酒并且不付钱</li>
+<li>一万个测试工程师在酒吧门外呼啸而过</li>
+<li>……</li>
+<li><strong>BDD</strong></li>
+<li>一个测试工程师走进一家酒吧，要了一杯啤酒，应该得到一杯啤酒</li>
+<li>一个测试工程师走进一家酒吧，要了一杯鸡尾酒，应该得到一杯鸡尾酒</li>
+<li>一个测试工程师走进一家酒吧，啥都没要，那就不理他</li>
+</ul>
+<p>简单地说，TDD是比较传统的测试方案，写测试，写程序，重构，完成开发。而敏捷开发中，按TDD那种方法写测试太慢了，客户要看到原型的时候你还在写测试，所以诞生了BDD，将TDD中必要的软件功能测试拿出来，在用户正常需求的预期下进行测试，不测试程序本身的健壮性，这样的话能在满足用户需求的情况下最快地进行测试驱动开发。</p>
+<h2 id="前端单元测试工具介绍"><a href="#前端单元测试工具介绍" class="headerlink" title="前端单元测试工具介绍"></a>前端单元测试工具介绍</h2><p>关于测试程序的整个流程大致如下：</p>
+<ul>
+<li>构建测试需要的环境（浏览器/node）</li>
+<li>引入一个单元测试框架</li>
+<li>引入一个断言库</li>
+<li>引入测试需要的工具</li>
+<li>引入被测试模块和依赖模块</li>
+<li>编写断言</li>
+<li>运行测试程序</li>
+</ul>
+<p>下面我会简单介绍一下测试要用到的工具</p>
+<h3 id="测试执行工具karma"><a href="#测试执行工具karma" class="headerlink" title="测试执行工具karma"></a>测试执行工具karma</h3><p>AngularJS团队开发的测试执行工具（test runner），他本身不具备测试功能，主要用于管理所有测试工具，包括测试框架，测试环境，编译工具等等，在比较复杂的测试需求下非常好用。</p>
+<h3 id="js单元测试框架"><a href="#js单元测试框架" class="headerlink" title="js单元测试框架"></a>js单元测试框架</h3><ul>
+<li><code>QUnit</code>——jQuery团队开发的测试工具，在jQ时代用于jQ的单元测试十分好用，但是和jQ一样都是比较老的技术了</li>
+<li><code>jasmine/jest</code>——<code>jasmine</code>是当前比较流行的测试框架之一，而<code>jest</code>是facebook团队在<code>jasmine</code>基础上演变开发出来的框架。</li>
+<li><code>mocha</code>——现在最流行的测试框架之一，可自由选择断言库</li>
+</ul>
+<p>PS：调研时因为有<code>react</code>的测试需求，所以我主要尝试了<code>jest</code>和<code>mocha</code>，在没上karma的情况下使用发现<code>jest</code>速度相对<code>mocha</code>慢了很多，同时刚好找到了几个比较好的<code>mocha</code>的例子，所以后面基本都是使用<code>mocha</code></p>
+<h3 id="js断言库"><a href="#js断言库" class="headerlink" title="js断言库"></a>js断言库</h3><p>断言库即测试用的一种类似自然语言的API，用于编写易懂的测试程序</p>
+<ul>
+<li><code>chai</code>——支持TDD（assert）和BDD（expect/should）的断言风格</li>
+<li><code>should.js/expect.js</code>——两个比较轻量的BDD断言库</li>
+<li><code>assert</code>——这是一个<code>node core</code>模块，用于node的TDD开发</li>
+</ul>
+<h3 id="mock工具"><a href="#mock工具" class="headerlink" title="mock工具"></a>mock工具</h3><p>测试单元往往依赖于外部模块，然后依赖模块可能因为某些原因不能直接使用，就需要对其进行mock，伪造依赖模块。例如测试ajax要模拟返回404的情况，这就需要mock实现。目前常用的mock工具是<code>sinon.js</code></p>
+<h3 id="react测试工具"><a href="#react测试工具" class="headerlink" title="react测试工具"></a>react测试工具</h3><ul>
+<li><code>React TestUtils</code>——facebook官方提供的测试工具集，可渲染单个react组件，包含了事件模拟API和组件状态模拟API，详情可戳<a href="https://facebook.github.io/react/docs/test-utils.html" target="_blank" rel="noopener">这里</a></li>
+<li><code>enzyme</code>——因为facebook官网API比较繁琐，所以airbnb团队对它进行了封装开发出了<code>enzyme</code>，react官网也推荐使用这个库。它对外提供三种渲染组件的方式<ul>
+<li><code>shallow</code>——浅渲染组件，不渲染子组件，只包含第一层DOM结构</li>
+<li><code>render</code>——将整个组件渲染成静态HTML字符串，包含全DOM结构（其实使用的是大家熟知的node模块<code>cherrio</code>）</li>
+<li><code>mount</code>——将整个组件渲染成真实DOM，与真实环境相同</li>
+</ul>
+</li>
+</ul>
+<p>这三种渲染方式速度是递减的，可以根据自己的测试需求选择想要的组件渲染方式</p>
+<h2 id="测试实践1——非浏览器环境单元测试"><a href="#测试实践1——非浏览器环境单元测试" class="headerlink" title="测试实践1——非浏览器环境单元测试"></a>测试实践1——非浏览器环境单元测试</h2><h3 id="前言-1"><a href="#前言-1" class="headerlink" title="前言"></a>前言</h3><p>其实这个方案是在一开始我不知道<code>karma</code>的情况下使用的，在遇到了一系列问题再咨询后才知道了<code>karma</code>这个工具，后面基本都是使用<code>karma</code>运行测试。但是这个方案完全能满足大部分node环境下js的单元测试，换句话说就是没用到浏览器API的js模块。</p>
+<h3 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h3><ul>
+<li><code>mocha</code></li>
+<li><code>chai</code></li>
+<li><code>sinon.js</code></li>
+<li><code>enzyme</code></li>
+<li><code>babel</code>——编译es6风格的测试文件</li>
+<li><code>mochawesome</code>——生成酷炫的html测试报告（这个我好喜欢但是karma没有TAT）</li>
+</ul>
+<p>上面的工具都直接用npm安装即可，其中<code>babel</code>安装需要配置一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-core babel-preset-es2015 --save-dev</span><br></pre></td></tr></table></figure>
+<p>在项目目录下新建一个.babelrc配置文件，内容如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"presets"</span>: [ <span class="string">"es2015"</span> ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="单元测试样例"><a href="#单元测试样例" class="headerlink" title="单元测试样例"></a>单元测试样例</h3><p>所有的测试程序最好在项目目录的test文件夹下面，这样mocha能自动识别</p>
+<ul>
+<li><p>简单的模块测试</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; expect &#125; <span class="keyword">from</span> <span class="string">'chai'</span></span><br><span class="line"></span><br><span class="line">describe(<span class="string">'add(a, b) Test'</span>, () =&gt; &#123;</span><br><span class="line">    it(<span class="string">'1 + 1 = 2'</span>, () =&gt; &#123;</span><br><span class="line">        expect(add(<span class="number">1</span>, <span class="number">1</span>)).to.equal(<span class="number">2</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">    it(<span class="string">'2 + 3 = 5'</span>, () =&gt; &#123;</span><br><span class="line">        expect(add(<span class="number">2</span>, <span class="number">3</span>)).to.equal(<span class="number">5</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>react组件测试</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; expect &#125; <span class="keyword">from</span> <span class="string">'chai'</span></span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">'enzyme'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'src/app'</span></span><br><span class="line"></span><br><span class="line">describe(<span class="string">'Enzyme Render'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    it(<span class="string">'Todo item should not have todo-done class'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> app = render(<span class="xml"><span class="tag">&lt;<span class="name">App</span>/&gt;</span></span>)</span><br><span class="line">        expect(app.find(<span class="string">'.todo-done'</span>).length).to.equal(<span class="number">0</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>接下来只需要运行如下命令即可运行测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mocha --compilers js:babel-core/register</span><br></pre></td></tr></table></figure></p>
+<p>如果要用<code>mochawesome</code>生成报告，只需加上reporter属性，报告会在目录下的一个新文件夹生成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mocha --compilers js:babel-core/register --reporter mochawesome</span><br></pre></td></tr></table></figure></p>
+<p>酷炫的mochawesome报告（实际还有动效噢~）<br><img src="/blog/images/mochawesome.png" alt="mochawesome"></p>
+<p>关于mocha和enzyme的使用我就不做赘述了，自己用的也不怎么样，详情可以参考阮一峰的这两篇文章</p>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html" target="_blank" rel="noopener">测试框架 Mocha 实例教程</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/02/react-testing-tutorial.html" target="_blank" rel="noopener">React 测试入门教程</a></li>
+</ul>
+<h3 id="该方案的一些缺陷"><a href="#该方案的一些缺陷" class="headerlink" title="该方案的一些缺陷"></a>该方案的一些缺陷</h3><ul>
+<li><strong>单纯的es6引擎无法识别webpack引入的非js模块</strong><br>因为开发的时候用webpack构建，所以项目的js文件中有不少引入模块是非js的，包括css，json等等，但是mocha只能用babel引擎，所以编译时遇到<code>import &#39;index.css&#39;</code>这种语句就会直接挂掉，如果要为了适应测试而更改原项目结构这肯定是不佳的。</li>
+<li><strong>测试环境依为node，不能测试用到浏览器API的js文件</strong><br>在web前端的开发过程中，必然会用到大量的浏览器API，然而node环境下并没有<code>window</code>变量，所以所有用到这个变量的js文件都会挂掉。</li>
+</ul>
+<p>综上所述，最终放弃了该方案，在咨询过程中得知了karma，搭建了最终的测试环境</p>
+<h2 id="测试实践2——虚拟浏览器环境单元测试"><a href="#测试实践2——虚拟浏览器环境单元测试" class="headerlink" title="测试实践2——虚拟浏览器环境单元测试"></a>测试实践2——虚拟浏览器环境单元测试</h2><p><strong>提醒: 这份karma配置在windows下调用sinon.js会有路径错误，暂时没找到解决方法</strong></p>
+<h3 id="前言-2"><a href="#前言-2" class="headerlink" title="前言"></a>前言</h3><p>karma的优点在于快速重载测试，多浏览器测试和<strong>webpack预处理</strong>。karma的配置异常繁琐，我的karma配置基本来自于<a href="http://www.jianshu.com/p/6c74c96148c9" target="_blank" rel="noopener">React 测试驱动教程</a>，这篇文章翻译自一篇国外文章<a href="http://spencerdixon.com/blog/test-driven-react-tutorial.html?utm_campaign=Front+End+Newsletter&amp;utm_medium=email&amp;utm_source=Front_End_Newsletter_2" target="_blank" rel="noopener">Test Driven React Tutorial</a>。</p>
+<h3 id="测试工具-1"><a href="#测试工具-1" class="headerlink" title="测试工具"></a>测试工具</h3><ul>
+<li><code>karma</code>——测试运行工具</li>
+<li><code>phantomjs</code>——提供虚拟webkit环境，不会打开浏览器</li>
+<li><code>mocha</code></li>
+<li><code>chai</code></li>
+<li><code>sinon.js</code></li>
+<li><code>enzyme</code></li>
+<li><code>webpack</code>——编译测试文件</li>
+</ul>
+<h3 id="karma-config-js解释"><a href="#karma-config-js解释" class="headerlink" title="karma.config.js解释"></a><code>karma.config.js</code>解释</h3><p>因为karma的具体配置过程在<a href="http://www.jianshu.com/p/6c74c96148c9" target="_blank" rel="noopener">React 测试驱动教程</a>已经讲得很详细了，所以我就大致解释一下karma.config.js的各项，方便更改配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./karma.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>).argv;</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line">    config.set(&#123;</span><br><span class="line">        <span class="comment">// 浏览器环境设置，可以选择多个浏览器，如chrome，</span></span><br><span class="line">        <span class="comment">// firefox，ie等等，首先要下载karma插件并在下面的plugins里面声明才可用</span></span><br><span class="line">        browsers: [<span class="string">'PhantomJS'</span>],</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果不添加--watch参数就只运行一次测试</span></span><br><span class="line">        singleRun: !argv.watch,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 测试框架设置，同理也要先下载插件并声明</span></span><br><span class="line">        frameworks: [<span class="string">'mocha'</span>, <span class="string">'chai'</span>],</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 测试报告格式测试，同理也要先下载插件并声明</span></span><br><span class="line">        reporters: [<span class="string">'spec'</span>],</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 加入babel和phantomjs的polyfill</span></span><br><span class="line">        files: [</span><br><span class="line">            <span class="string">'node_modules/babel-polyfill/dist/polyfill.js'</span>,</span><br><span class="line">            <span class="string">'./node_modules/phantomjs-polyfill/bind-polyfill.js'</span>,</span><br><span class="line">            <span class="string">'./test/*.js'</span> <span class="comment">// 声明watch测试文件的路径</span></span><br><span class="line">        ],</span><br><span class="line">        preprocessors: &#123;</span><br><span class="line">            <span class="comment">// 希望用webpack预处理的文件</span></span><br><span class="line">            <span class="comment">// 测试时使用sourcemap方面debug</span></span><br><span class="line">            [<span class="string">'./test/*.js'</span>]: [<span class="string">'webpack'</span>, <span class="string">'sourcemap'</span>]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">// webpack配置，直接使用你开发环境下的webpack配置即可</span></span><br><span class="line">        <span class="comment">// 或者重写一份更合适的，这样可以保证测试与开发的一致性</span></span><br><span class="line">        webpack: &#123;</span><br><span class="line">             devtool: <span class="string">'inline-source-map'</span>,</span><br><span class="line">             resolve: &#123;</span><br><span class="line">                root: __dirname,</span><br><span class="line"></span><br><span class="line">                extensions: [<span class="string">''</span>, <span class="string">'.js'</span>, <span class="string">'.jsx'</span>],</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 为了让enzyme正常工作（不知道为什么总之加上就是了= =）</span></span><br><span class="line">                alias: &#123;</span><br><span class="line">                    <span class="string">'sinon'</span>: <span class="string">'sinon/pkg/sinon'</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="built_in">module</span>: &#123;</span><br><span class="line">                <span class="comment">// 不要用babel编译sinon</span></span><br><span class="line">                noParse: [</span><br><span class="line">                    /node_modules\/sinon\<span class="comment">//</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="comment">// 编译测试文件</span></span><br><span class="line">                loaders: [</span><br><span class="line">                    &#123; <span class="attr">test</span>: <span class="regexp">/\.js$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>, <span class="attr">loader</span>: <span class="string">'babel'</span> &#125;,</span><br><span class="line">                    &#123; <span class="attr">test</span>: <span class="regexp">/\.css$/</span>, <span class="attr">loaders</span>: [<span class="string">'style'</span>, <span class="string">'css'</span>,    <span class="string">'postcss'</span>]&#125;,</span><br><span class="line">                    &#123; <span class="attr">test</span>: <span class="regexp">/\.json$/</span>, <span class="attr">loader</span>: <span class="string">'json'</span>&#125;</span><br><span class="line">                ],</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="comment">// 为了让enzyme正常工作（不知道为什么总之加上就是了= =）</span></span><br><span class="line">            externals: &#123;</span><br><span class="line">                <span class="string">'jsdom'</span>: <span class="string">'window'</span>,</span><br><span class="line">                <span class="string">'cheerio'</span>: <span class="string">'window'</span>,</span><br><span class="line">                <span class="string">'react/lib/ExecutionEnvironment'</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">'react/lib/ReactContext'</span>: <span class="string">'window'</span></span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">        webpackMiddleware: &#123;</span><br><span class="line">            noInfo: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">// 声明所有插件</span></span><br><span class="line">        plugins: [</span><br><span class="line">            <span class="string">'karma-mocha'</span>,</span><br><span class="line">            <span class="string">'karma-chai'</span>,</span><br><span class="line">            <span class="string">'karma-webpack'</span>,</span><br><span class="line">            <span class="string">'karma-phantomjs-launcher'</span>,</span><br><span class="line">            <span class="string">'karma-spec-reporter'</span>,</span><br><span class="line">            <span class="string">'karma-sourcemap-loader'</span></span><br><span class="line">        ]</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>最后只要在<code>package.json</code>中加上这个命令即可<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "test": "node_modules/.bin/karma start karma.config.js --watch",</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>以后只需运行以下命令即可启动测试，并且能够在文件更新时自动进行测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run test</span><br></pre></td></tr></table></figure></p>
+<p>启动测试：<br><img src="/blog/images/test.png" alt="test"><br>文件更新时自动进行测试：<br><img src="/blog/images/testchange.png" alt="testChange"><br>大功告成，至此已经成功搭建了测试环境</p>
+<h2 id="前端测试的一些难点"><a href="#前端测试的一些难点" class="headerlink" title="前端测试的一些难点"></a>前端测试的一些难点</h2><ul>
+<li><strong>UI行为难以测试</strong><br>因为我目前的项目是一个基于地图的应用产品，经常遇到在地图上画点画线等需求，然而这种行为在测试用例里面很难表达出来，更不用说画图工具封装在地图API之内难以找到测试所需的DOM结构</li>
+<li><strong>DOM事件需要落实到具体的DOM节点</strong><br>众所周知，web前端测试肯定需要测试大量click事件change事件等等，然而在编写测试用例的时候这些事件肯定要声明触发的节点。然而DOM结构是非常多变的，一般来说DOM真正稳定的时候已经是开发末期了，所以这时候测试用例的维护变得非常麻烦，常常需要更要DOM节点名称</li>
+</ul>
+<p>还有其他更多靠近UI层的测试可能还是需要人工或者其他工具来实现，同时不少测试工作还需要衡量维护测试文件的工作量。前端的测试仍然在发展中，未来或许会有更好的测试方案，目前取自己所需即可。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95" target="_blank" rel="noopener">软件测试 - 维基百科</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91" target="_blank" rel="noopener">测试驱动开发 - 维基百科</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91" target="_blank" rel="noopener">行为驱动开发 - 维基百科</a></li>
+<li><a href="https://facebook.github.io/react/docs/test-utils.html" target="_blank" rel="noopener">React TestUtils</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html" target="_blank" rel="noopener">测试框架 Mocha 实例教程</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/02/react-testing-tutorial.html" target="_blank" rel="noopener">React 测试入门教程</a></li>
+<li><a href="http://www.jianshu.com/p/6c74c96148c9" target="_blank" rel="noopener">React 测试驱动教程</a></li>
+<li><a href="http://spencerdixon.com/blog/test-driven-react-tutorial.html?utm_campaign=Front+End+Newsletter&amp;utm_medium=email&amp;utm_source=Front_End_Newsletter_2" target="_blank" rel="noopener">Test Driven React Tutorial</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/blog/tags/test/" rel="tag"># test</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2016/03/27/fe-interview-2/" rel="next" title="前端面试复习-2-HTML&CSS">
+                <i class="fa fa-chevron-left"></i> 前端面试复习-2-HTML&CSS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2016/10/02/react-component-design/" rel="prev" title="谈谈react组件设计">
+                谈谈react组件设计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/avatar.jpeg" alt="Oraaange">
+            
+              <p class="site-author-name" itemprop="name">Oraaange</p>
+              <p class="site-description motion-element" itemprop="description">The End is always near</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/blog/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Orange-C" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:oraaangecolin@gmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于测试的基础知识"><span class="nav-number">2.</span> <span class="nav-text">关于测试的基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是测试"><span class="nav-number">2.1.</span> <span class="nav-text">什么是测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于自动化测试"><span class="nav-number">2.2.</span> <span class="nav-text">关于自动化测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于TDD-amp-BDD"><span class="nav-number">2.3.</span> <span class="nav-text">关于TDD&amp;BDD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前端单元测试工具介绍"><span class="nav-number">3.</span> <span class="nav-text">前端单元测试工具介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试执行工具karma"><span class="nav-number">3.1.</span> <span class="nav-text">测试执行工具karma</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js单元测试框架"><span class="nav-number">3.2.</span> <span class="nav-text">js单元测试框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js断言库"><span class="nav-number">3.3.</span> <span class="nav-text">js断言库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mock工具"><span class="nav-number">3.4.</span> <span class="nav-text">mock工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react测试工具"><span class="nav-number">3.5.</span> <span class="nav-text">react测试工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试实践1——非浏览器环境单元测试"><span class="nav-number">4.</span> <span class="nav-text">测试实践1——非浏览器环境单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言-1"><span class="nav-number">4.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试工具"><span class="nav-number">4.2.</span> <span class="nav-text">测试工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单元测试样例"><span class="nav-number">4.3.</span> <span class="nav-text">单元测试样例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#该方案的一些缺陷"><span class="nav-number">4.4.</span> <span class="nav-text">该方案的一些缺陷</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试实践2——虚拟浏览器环境单元测试"><span class="nav-number">5.</span> <span class="nav-text">测试实践2——虚拟浏览器环境单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言-2"><span class="nav-number">5.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试工具-1"><span class="nav-number">5.2.</span> <span class="nav-text">测试工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#karma-config-js解释"><span class="nav-number">5.3.</span> <span class="nav-text">karma.config.js解释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前端测试的一些难点"><span class="nav-number">6.</span> <span class="nav-text">前端测试的一些难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oraaange</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'Orange-C',
+            repo: 'gitment-store',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ed55f570e8689eff71bbc3d9855f8591ae8946b3',
+            
+                client_id: '2f28b1ae230801880b03'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 10807,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
